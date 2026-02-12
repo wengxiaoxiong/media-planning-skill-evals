@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>智能合同管理系统媒介规划报告</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #0f4c81;
+      --secondary-color: #2f7eb9;
+      --accent-color: #d17a22;
+      --bg-light: #f4f7fb;
+      --paper: #ffffff;
+      --text-main: #152033;
+      --text-muted: #5d687a;
+      --border-color: #d8e0ea;
+      --risk-color: #8f2f2f;
+      --ok-color: #2e6a4b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--text-main);
+      font-family: "Source Han Sans SC", "Noto Sans SC", "PingFang SC", "Segoe UI", sans-serif;
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at 10% 8%, rgba(47, 126, 185, 0.08), transparent 42%),
+        radial-gradient(circle at 90% 0%, rgba(209, 122, 34, 0.08), transparent 35%),
+        var(--bg-light);
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px 56px;
+    }
+
+    .cover {
+      background: linear-gradient(130deg, #12385b 0%, #0f4c81 58%, #1d5f97 100%);
+      color: #f9fbff;
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 14px 40px rgba(15, 76, 129, 0.22);
+      margin-bottom: 16px;
+    }
+
+    .cover h1 {
+      margin: 0;
+      font-family: "Source Han Serif SC", "Songti SC", serif;
+      font-size: 30px;
+      letter-spacing: 0.4px;
+    }
+
+    .cover-meta {
+      margin-top: 10px;
+      opacity: 0.92;
+      font-size: 14px;
+    }
+
+    .badge-row {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+
+    .toc,
+    .section {
+      background: var(--paper);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-top: 14px;
+      padding: 18px;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      padding-left: 10px;
+      border-left: 4px solid var(--primary-color);
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .toc ol {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text-muted);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+
+    .summary-card .label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .summary-card .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 2px 0;
+    }
+
+    .summary-card .note {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .cols-2 {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 12px;
+    }
+
+    .card {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .logic-steps {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .logic-step {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f6f9fd 100%);
+      position: relative;
+    }
+
+    .logic-step .num {
+      font-size: 12px;
+      color: var(--secondary-color);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .logic-step p {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .chart {
+      width: 100%;
+      height: 340px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .chart-tall {
+      height: 380px;
+    }
+
+    .footnote {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border-color);
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f7fb;
+      color: #1f3553;
+    }
+
+    .takeaway {
+      background: #edf5ff;
+      border-left: 4px solid var(--primary-color);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    .risk-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .risk-card {
+      border: 1px solid #eccaca;
+      border-left: 4px solid var(--risk-color);
+      background: #fff9f9;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .action-card {
+      border: 1px solid #cde3d4;
+      border-left: 4px solid var(--ok-color);
+      background: #f6fbf8;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .source-list {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+    }
+
+    .source-list li {
+      margin: 6px 0;
+    }
+
+    code { font-family: "Menlo", "Consolas", monospace; }
+
+    @media (max-width: 980px) {
+      .summary-grid,
+      .cols-2,
+      .logic-steps,
+      .risk-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chart,
+      .chart-tall {
+        height: 320px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="cover">
+      <h1>智能合同管理系统媒介规划报告</h1>
+      <div class="cover-meta">周期：2026-02-12 至 2026-08-11 | 预算：300,000 RMB | 级别：Confidential</div>
+      <div class="badge-row">
+        <span class="badge">核心目标：50 MQL / 6个月 [S1]</span>
+        <span class="badge">策略主线：教育 + 线索双轮驱动 [S1][S4]</span>
+        <span class="badge">口径：预算可复算，结果分情景估算 [S1]</span>
+      </div>
+    </section>
+
+    <section class="toc">
+      <h2 class="section-title">目录</h2>
+      <ol>
+        <li>Executive Summary</li>
+        <li>Project Context & Mission</li>
+        <li>Insight & Evidence Ledger</li>
+        <li>Strategic Reasoning Path</li>
+        <li>Audience & Channel Synergy</li>
+        <li>Media Mix & Allocation</li>
+        <li>Flight Plan (Roadmap)</li>
+        <li>Outcome Projection & ROI</li>
+        <li>Risk Mitigation & Next Steps</li>
+        <li>Source Index</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Executive Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="label">目标 MQL</div>
+          <div class="value">50</div>
+          <div class="note">6 个月目标值 [S1]</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">基准预测 MQL</div>
+          <div class="value">60.9</div>
+          <div class="note">目标完成率 122%（估算）[S1]</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">基准 ROI(ARR)</div>
+          <div class="value">2.44x</div>
+          <div class="note">按平均年合同额 12 万估算 [S1]</div>
+        </div>
+      </div>
+      <div class="takeaway">结论：预算受限且销售周期长的情况下，必须优先保障“高意图渠道（微信+搜索）”并用内容触点支撑教育，单一渠道难以同时完成认知和 MQL 目标。[S1][S4][S5]</div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Project Context & Mission</h2>
+      <div class="cols-2">
+        <div class="card">
+          <h3>问题陈述</h3>
+          <ul>
+            <li>品类教育不足，约 70% 决策者尚未形成明确品类认知。[S1]</li>
+            <li>市场高度垂直，公开基准有限，需采用“假设-验证”迭代。[S1]</li>
+            <li>预算 30 万但销售周期 3-6 个月，天然存在短期获客压力。[S1]</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>任务目标</h3>
+          <ul>
+            <li>6 个月累计获取 50 个 MQL。[S1]</li>
+            <li>建立“行业专家”认知，形成可复用内容资产池。[S1]</li>
+            <li>形成可审计漏斗：预算 -> 曝光 -> 点击 -> MQL -> ARR。[S1]</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Insight & Evidence Ledger</h2>
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th>核心洞察</th><th>证据</th><th>策略含义</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>合同数字化基础设施持续成熟</td>
+              <td>电子签名认证证书累计规模持续增长 [S3]</td>
+              <td>市场教育成本可控，但需要差异化叙事抢认知位</td>
+            </tr>
+            <tr>
+              <td>头部平台仍聚合流量，商业化能力增强</td>
+              <td>QuestMobile 报告 + 腾讯/快手/B站财报 [S4][S5][S6][S7]</td>
+              <td>用头部平台做触达，用高意图链路做转化</td>
+            </tr>
+            <tr>
+              <td>竞品已进入 AI 合同叙事阶段</td>
+              <td>法大大与 e签宝公开动态 [S8][S9]</td>
+              <td>需要抢先定义“专家框架”和方法论内容资产</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Strategic Reasoning Path</h2>
+      <div class="logic-steps">
+        <div class="logic-step"><div class="num">Step 1</div><p>目标拆解为认知教育与 MQL 双目标 [S1]</p></div>
+        <div class="logic-step"><div class="num">Step 2</div><p>人群按决策层/影响层/使用层分层运营 [S1]</p></div>
+        <div class="logic-step"><div class="num">Step 3</div><p>渠道采用“教育引擎 + 转化引擎”协同 [S4][S5][S7]</p></div>
+        <div class="logic-step"><div class="num">Step 4</div><p>预算优先高意图渠道，同时保留再营销预算 [S1]</p></div>
+        <div class="logic-step"><div class="num">Step 5</div><p>以 2-2-2 节奏推动验证与放量闭环 [S1]</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Audience & Channel Synergy</h2>
+      <div class="cols-2">
+        <div class="card">
+          <div id="sankeyChart" class="chart chart-tall"></div>
+          <div class="footnote">人群-触点-资产协同路径（策略结构图，非实测量）[S1]</div>
+        </div>
+        <div class="card">
+          <div id="radarChart" class="chart chart-tall"></div>
+          <div class="footnote">人群触达适配评分（估算）：用于渠道优先级排序 [S1][S4]</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Media Mix & Allocation</h2>
+      <div class="cols-2">
+        <div class="card">
+          <div id="budgetChart" class="chart"></div>
+          <div class="footnote">预算分配（基准情景）[S1][S2][S4][S5][S7]</div>
+        </div>
+        <div class="card">
+          <h3>预算与角色</h3>
+          <table>
+            <thead>
+              <tr><th>渠道</th><th>预算(元)</th><th>占比</th><th>角色</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>微信生态</td><td>105000</td><td>35%</td><td>主线索引擎</td></tr>
+              <tr><td>搜索广告</td><td>75000</td><td>25%</td><td>高意图收口</td></tr>
+              <tr><td>垂直媒体</td><td>45000</td><td>15%</td><td>权威背书教育</td></tr>
+              <tr><td>抖音+B站</td><td>36000</td><td>12%</td><td>专家内容扩散</td></tr>
+              <tr><td>小红书</td><td>15000</td><td>5%</td><td>口碑补充触点</td></tr>
+              <tr><td>再营销</td><td>24000</td><td>8%</td><td>复访与转化提效</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Flight Plan (Roadmap)</h2>
+      <div class="card">
+        <div id="flightChart" class="chart"></div>
+        <div class="footnote">节奏：M1-M2 认知起盘（27%）-> M3-M4 线索放大（40%）-> M5-M6 收口优化（33%）[S1]</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Outcome Projection & ROI</h2>
+      <div class="cols-2">
+        <div class="card">
+          <div id="outcomeChart" class="chart"></div>
+          <div class="footnote">情景结果：保守 / 基准 / 乐观（估算）[S1]</div>
+        </div>
+        <div class="card">
+          <div id="roiChart" class="chart"></div>
+          <div class="footnote">ROI(ARR) 由 MQL、Win Rate、ACV 共同决定（估算）[S1]</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 12px;">
+        <div id="mqlByChannelChart" class="chart"></div>
+        <div class="footnote">基准情景渠道产出与 CPL（估算）[S1][S2]</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Risk Mitigation & Next Steps</h2>
+      <div class="risk-grid">
+        <div class="risk-card"><strong>风险 1：</strong>线索口径不统一导致“虚高 MQL”。<br />应对：统一 MQL 评分和去重口径，周更审计。</div>
+        <div class="risk-card"><strong>风险 2：</strong>前期教育不足，后期转化承压。<br />应对：前两月锁定专家内容产能，确保中段放量。</div>
+        <div class="risk-card"><strong>风险 3：</strong>搜索词结构失衡导致 CPL 上升。<br />应对：品牌词/问题词/竞品词月度调仓。</div>
+      </div>
+      <div class="action-card" style="margin-top: 10px;">
+        <strong>30-60-90 天动作：</strong>
+        <ol>
+          <li>30 天：完成内容资产库（白皮书、案例、研讨会脚本）并上线首轮 AB 落地页。</li>
+          <li>60 天：建立渠道周复盘机制，偏差超过 20% 自动迁移预算。</li>
+          <li>90 天：按 MQL->SQL->Won 复盘模型，确定下阶段扩量阈值。</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Source Index</h2>
+      <ol class="source-list">
+        <li>[S1] <code>v3/test-2/brief.md</code></li>
+        <li>[S2] <code>.agents/skills/media-planning/xiaohongshu_ad_data.json</code></li>
+        <li>[S3] <a href="https://www.samr.gov.cn/xw/zj/art/2025/art_3f6f457f57a141cd806f7af8dc4d7203.html" target="_blank" rel="noreferrer">国家市场监督管理总局（电子签名认证证书数据）</a></li>
+        <li>[S4] <a href="https://www.questmobile.com.cn/research/report/197" target="_blank" rel="noreferrer">QuestMobile 2025 中国移动互联网半年报告</a></li>
+        <li>[S5] <a href="https://www.tencent.com/zh-cn/articles/2501060.html" target="_blank" rel="noreferrer">腾讯 2025Q3 财报新闻稿</a></li>
+        <li>[S6] <a href="https://www.kuaishou.com/investor-relations/news-releases/news-release-details/2025/Kuaishou-Technology-Announces-Third-Quarter-2025-Unaudited-Financial-Results/default.aspx" target="_blank" rel="noreferrer">快手 2025Q3 业绩新闻稿</a></li>
+        <li>[S7] <a href="https://ir.bilibili.com/news-releases/news-release-details/bilibili-inc-announces-third-quarter-2025-financial-results" target="_blank" rel="noreferrer">哔哩哔哩 2025Q3 财报新闻稿</a></li>
+        <li>[S8] <a href="https://www.fadada.com/detail-1920.html" target="_blank" rel="noreferrer">法大大官方动态</a></li>
+        <li>[S9] <a href="https://www.esign.cn/news/528" target="_blank" rel="noreferrer">e签宝官方动态</a></li>
+      </ol>
+    </section>
+  </div>
+
+  <script>
+    const palette = ['#0f4c81', '#2f7eb9', '#74a9d8', '#d17a22', '#83b592', '#5f6b7a'];
+    const textColor = '#152033';
+    const splitLine = '#e1e8f0';
+
+    const chartBudget = echarts.init(document.getElementById('budgetChart'));
+    chartBudget.setOption({
+      color: palette,
+      tooltip: { trigger: 'item' },
+      legend: { bottom: 0, textStyle: { color: textColor } },
+      series: [{
+        type: 'pie',
+        radius: ['40%', '68%'],
+        center: ['50%', '46%'],
+        itemStyle: { borderColor: '#fff', borderWidth: 2 },
+        label: { formatter: '{b}\n{d}%' },
+        data: [
+          { value: 105000, name: '微信生态' },
+          { value: 75000, name: '搜索广告' },
+          { value: 45000, name: '垂直媒体' },
+          { value: 36000, name: '抖音+B站' },
+          { value: 15000, name: '小红书' },
+          { value: 24000, name: '再营销' }
+        ]
+      }]
+    });
+
+    const chartFlight = echarts.init(document.getElementById('flightChart'));
+    chartFlight.setOption({
+      color: ['#2f7eb9', '#d17a22'],
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { top: 4 },
+      grid: { left: 52, right: 20, top: 46, bottom: 70 },
+      dataZoom: [{ type: 'inside' }, { type: 'slider', height: 18, bottom: 24 }],
+      xAxis: {
+        type: 'category',
+        data: ['M1 认知', 'M2 认知', 'M3 放量', 'M4 放量', 'M5 收口', 'M6 收口'],
+        axisLabel: { color: textColor }
+      },
+      yAxis: [
+        { type: 'value', name: '月预算(元)', axisLabel: { color: textColor }, splitLine: { lineStyle: { color: splitLine } } },
+        { type: 'value', name: '月MQL(估算)', axisLabel: { color: textColor } }
+      ],
+      series: [
+        { name: '预算', type: 'bar', barWidth: 26, data: [36000, 45000, 54000, 66000, 54000, 45000] },
+        { name: 'MQL', type: 'line', yAxisIndex: 1, smooth: true, symbolSize: 8, data: [6, 8, 10, 13, 12, 12] }
+      ]
+    });
+
+    const chartOutcome = echarts.init(document.getElementById('outcomeChart'));
+    chartOutcome.setOption({
+      color: ['#5f6b7a', '#0f4c81', '#83b592'],
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { top: 4 },
+      grid: { left: 50, right: 16, top: 44, bottom: 34 },
+      xAxis: {
+        type: 'category',
+        data: ['保守', '基准', '乐观'],
+        axisLabel: { color: textColor }
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { color: textColor },
+        splitLine: { lineStyle: { color: splitLine } }
+      },
+      series: [
+        { name: 'MQL', type: 'bar', data: [42, 61, 79] },
+        { name: '预计Won(单)', type: 'bar', data: [3.4, 6.1, 10.3] },
+        { name: '新增ARR(万元)', type: 'bar', data: [40.32, 73.2, 123.24] }
+      ]
+    });
+
+    const chartRoi = echarts.init(document.getElementById('roiChart'));
+    chartRoi.setOption({
+      color: ['#2f7eb9', '#d17a22'],
+      tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+      grid: { left: 50, right: 50, top: 40, bottom: 34 },
+      xAxis: {
+        type: 'category',
+        data: ['保守', '基准', '乐观'],
+        axisLabel: { color: textColor }
+      },
+      yAxis: [
+        {
+          type: 'value',
+          name: '新增ARR(万元)',
+          axisLabel: { color: textColor },
+          splitLine: { lineStyle: { color: splitLine } }
+        },
+        {
+          type: 'value',
+          name: 'ROI(ARR)',
+          axisLabel: { color: textColor }
+        }
+      ],
+      series: [
+        { name: '新增ARR(万元)', type: 'bar', data: [40.32, 73.2, 123.24] },
+        { name: 'ROI(ARR)', type: 'line', yAxisIndex: 1, smooth: true, symbolSize: 8, data: [1.34, 2.44, 4.11] }
+      ]
+    });
+
+    const chartMql = echarts.init(document.getElementById('mqlByChannelChart'));
+    chartMql.setOption({
+      color: ['#0f4c81', '#d17a22'],
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { top: 4 },
+      grid: { left: 52, right: 46, top: 44, bottom: 56 },
+      dataZoom: [{ type: 'inside' }, { type: 'slider', height: 18, bottom: 20 }],
+      xAxis: {
+        type: 'category',
+        data: ['微信生态', '搜索广告', '垂直媒体', '抖音+B站', '小红书', '再营销'],
+        axisLabel: { color: textColor, rotate: 20 }
+      },
+      yAxis: [
+        {
+          type: 'value',
+          name: 'MQL',
+          axisLabel: { color: textColor },
+          splitLine: { lineStyle: { color: splitLine } }
+        },
+        {
+          type: 'value',
+          name: 'CPL(元)',
+          axisLabel: { color: textColor }
+        }
+      ],
+      series: [
+        { name: 'MQL', type: 'bar', data: [13.3, 28.6, 6.1, 2.8, 0.5, 9.6] },
+        { name: 'CPL(元)', type: 'line', yAxisIndex: 1, smooth: true, data: [7870, 2619, 7407, 13000, 29167, 2500] }
+      ]
+    });
+
+    const chartRadar = echarts.init(document.getElementById('radarChart'));
+    chartRadar.setOption({
+      color: ['#2f7eb9', '#d17a22', '#5f6b7a'],
+      tooltip: {},
+      legend: { bottom: 0 },
+      radar: {
+        radius: '64%',
+        splitNumber: 4,
+        indicator: [
+          { name: '触达效率', max: 10 },
+          { name: '意图强度', max: 10 },
+          { name: '内容深度', max: 10 },
+          { name: '线索质量', max: 10 },
+          { name: '决策链覆盖', max: 10 }
+        ],
+        splitLine: { lineStyle: { color: '#d6e1ee' } },
+        splitArea: { areaStyle: { color: ['#f8fbff', '#f0f6fd'] } }
+      },
+      series: [{
+        type: 'radar',
+        data: [
+          { name: '微信生态+搜索', value: [8, 9, 6, 8, 8] },
+          { name: '垂直媒体', value: [5, 7, 9, 7, 6] },
+          { name: '短视频内容', value: [7, 4, 7, 4, 5] }
+        ]
+      }]
+    });
+
+    const chartSankey = echarts.init(document.getElementById('sankeyChart'));
+    chartSankey.setOption({
+      tooltip: { trigger: 'item' },
+      series: [{
+        type: 'sankey',
+        data: [
+          { name: '决策层' }, { name: '影响层' }, { name: '使用层' },
+          { name: '微信生态' }, { name: '搜索广告' }, { name: '垂直媒体' }, { name: '抖音+B站' },
+          { name: '白皮书/案例' }, { name: '研讨会/直播' }, { name: '落地页留资' }, { name: '销售跟进' }
+        ],
+        links: [
+          { source: '决策层', target: '垂直媒体', value: 12 },
+          { source: '决策层', target: '微信生态', value: 10 },
+          { source: '影响层', target: '搜索广告', value: 15 },
+          { source: '影响层', target: '微信生态', value: 11 },
+          { source: '使用层', target: '抖音+B站', value: 8 },
+          { source: '使用层', target: '搜索广告', value: 7 },
+          { source: '微信生态', target: '白皮书/案例', value: 12 },
+          { source: '垂直媒体', target: '研讨会/直播', value: 11 },
+          { source: '抖音+B站', target: '研讨会/直播', value: 7 },
+          { source: '搜索广告', target: '落地页留资', value: 18 },
+          { source: '白皮书/案例', target: '落地页留资', value: 11 },
+          { source: '研讨会/直播', target: '落地页留资', value: 10 },
+          { source: '落地页留资', target: '销售跟进', value: 24 }
+        ],
+        lineStyle: { color: 'gradient', curveness: 0.45 },
+        emphasis: { focus: 'adjacency' },
+        levels: [
+          { depth: 0, itemStyle: { color: '#5f6b7a' } },
+          { depth: 1, itemStyle: { color: '#2f7eb9' } },
+          { depth: 2, itemStyle: { color: '#d17a22' } },
+          { depth: 3, itemStyle: { color: '#2e6a4b' } }
+        ]
+      }]
+    });
+
+    const charts = [chartBudget, chartFlight, chartOutcome, chartRoi, chartMql, chartRadar, chartSankey];
+    window.addEventListener('resize', () => charts.forEach(c => c.resize()));
+  </script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>野生咖啡 Q2 媒介规划报告</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+  <style>
+    :root {
+      --ink-900: #1a1d1b;
+      --ink-700: #2f3330;
+      --ink-500: #5e645f;
+      --paper: #ffffff;
+      --paper-soft: #f3f4f1;
+      --line: #d8ddd8;
+      --brand: #2f5e4e;
+      --brand-soft: #e8f0ec;
+      --accent: #a66a3f;
+      --risk: #a14646;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink-700);
+      font-family: "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+      background:
+        radial-gradient(circle at 90% 0%, #edf2ef 0, #f6f7f5 36%, #f6f7f5 100%);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 24px auto 72px;
+      padding: 0 16px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 10px;
+      color: var(--ink-900);
+      font-family: "Source Han Serif SC", "Songti SC", serif;
+      letter-spacing: 0.2px;
+    }
+
+    h1 { font-size: 34px; }
+    h2 { font-size: 24px; }
+    h3 { font-size: 18px; }
+
+    .hero {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -70px;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, #dfe9e3 0, rgba(223, 233, 227, 0) 68%);
+      pointer-events: none;
+    }
+
+    .sub {
+      color: var(--ink-500);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .tag-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--ink-500);
+      background: #fafbf9;
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .module {
+      margin-top: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi { grid-column: span 3; }
+
+    .kpi .label { font-size: 13px; color: var(--ink-500); }
+
+    .kpi .num {
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      margin-top: 4px;
+      color: var(--ink-900);
+    }
+
+    .summary {
+      border-left: 4px solid var(--brand);
+      background: linear-gradient(90deg, var(--brand-soft) 0, #f9fbf8 35%, #ffffff 100%);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .flow-step {
+      background: #f9fbf9;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 130px;
+      position: relative;
+    }
+
+    .flow-step .idx {
+      font-size: 12px;
+      color: var(--brand);
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+
+    .chart-card { grid-column: span 6; }
+
+    .chart {
+      width: 100%;
+      height: 330px;
+    }
+
+    .chart-wide {
+      grid-column: span 12;
+    }
+
+    .footnote {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+      font-size: 12px;
+      color: var(--ink-500);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .table th,
+    .table td {
+      border: 1px solid var(--line);
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .table th {
+      background: #f6f8f6;
+      color: var(--ink-900);
+      font-weight: 700;
+    }
+
+    .risk {
+      border-left: 4px solid var(--risk);
+      padding-left: 10px;
+      margin: 8px 0;
+    }
+
+    .source-list {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--ink-500);
+    }
+
+    .source-list li { margin: 0 0 8px; }
+
+    @media (max-width: 960px) {
+      .kpi, .chart-card, .chart-wide { grid-column: span 12; }
+      .flow { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>野生咖啡 Q2 2026 媒介规划报告</h1>
+      <p class="sub">项目周期：2026-04-01 至 2026-06-30 | 总预算：¥800,000 | 目标：3个月获得 5,000+ 首单用户</p>
+      <div class="tag-row">
+        <span class="tag">品牌阶段：新品上市期</span>
+        <span class="tag">核心人群：25-35岁一二线咖啡爱好者</span>
+        <span class="tag">数据口径：实测 + 参考 + 估算</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card kpi">
+        <div class="label">基准情景首单（估算）</div>
+        <div class="num">6,165</div>
+        <div class="label">达成率约 123%</div>
+      </article>
+      <article class="card kpi">
+        <div class="label">基准 CPA</div>
+        <div class="num">¥129.8</div>
+        <div class="label">目标警戒线：¥170</div>
+      </article>
+      <article class="card kpi">
+        <div class="label">预计曝光</div>
+        <div class="num">1,854万</div>
+        <div class="label">按 CPM/CTR/CVR 模型估算</div>
+      </article>
+      <article class="card kpi">
+        <div class="label">90天 ROI（基准）</div>
+        <div class="num">1.14</div>
+        <div class="label">复购因子 0.8（假设）</div>
+      </article>
+    </section>
+
+    <section class="card module summary">
+      <h2>Executive Summary</h2>
+      <p>本案采用“挑战应对逻辑”：先解决新品认知不足，再在中后段完成首单收口与复购承接。渠道上以小红书、抖音、微信生态为主阵地，B站提供深内容背书，快手保留测试预算。[S1][S2][S3][S4][S5][S6]</p>
+      <p>在 80 万预算下，基准测算可实现 6,165 首单（CPA 129.8 元），可覆盖 5,000+ 目标；但首单毛利 ROI 仅约 0.64，必须依赖 90 天复购经营将 ROI 提升至 1 以上。[S1][S8]</p>
+    </section>
+
+    <section class="card module">
+      <h2>Strategic Reasoning Path</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="idx">STEP 01</div>
+          <h3>挑战识别</h3>
+          <p>新品上市期需同时完成“认知建立”和“首单转化”，预算仅 80 万，必须做阶段化取舍。[S6]</p>
+        </div>
+        <div class="flow-step">
+          <div class="idx">STEP 02</div>
+          <h3>人群策略</h3>
+          <p>先覆盖风味教育型兴趣人群，再对互动人群做扩量，减少冷启动期间的无效点击。[S1][S8]</p>
+        </div>
+        <div class="flow-step">
+          <div class="idx">STEP 03</div>
+          <h3>渠道组合</h3>
+          <p>小红书种草、抖音扩量、微信承接、B站深内容、快手测试，兼顾效率与风险控制。[S2][S3][S4][S5]</p>
+        </div>
+        <div class="flow-step">
+          <div class="idx">STEP 04</div>
+          <h3>经营闭环</h3>
+          <p>以 618 为转化峰值节点，后段聚焦小程序会员与补货机制，确保 ROI 不只依赖首单。[S2][S3][S7]</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid module">
+      <article class="card chart-card">
+        <h3>Media Mix & Allocation: 渠道预算分配</h3>
+        <div id="budgetChart" class="chart"></div>
+        <div class="footnote">Data Source: [S1][S8] + 策略估算</div>
+      </article>
+
+      <article class="card chart-card">
+        <h3>Flight Plan: 投放节奏（Q2）</h3>
+        <div id="flightChart" class="chart"></div>
+        <div class="footnote">Data Source: [S2][S3][S6][S7] + 节奏策略估算</div>
+      </article>
+
+      <article class="card chart-card">
+        <h3>Outcome Projection: 首单与CPA对比</h3>
+        <div id="outcomeChart" class="chart"></div>
+        <div class="footnote">Data Source: [S1][S8] + 模型估算</div>
+      </article>
+
+      <article class="card chart-card">
+        <h3>ROI Projection: 首单 ROI 与 90天 ROI</h3>
+        <div id="roiChart" class="chart"></div>
+        <div class="footnote">Data Source: [S1][S8] + AOV/毛利率/复购因子假设</div>
+      </article>
+
+      <article class="card chart-wide">
+        <h3>Audience & Channel Synergy: 人群触达雷达</h3>
+        <div id="audienceChart" class="chart" style="height:360px;"></div>
+        <div class="footnote">Data Source: [S1][S2][S3][S4][S5][S6] + 策略评分</div>
+      </article>
+    </section>
+
+    <section class="card module">
+      <h2>Outcome, Risks & Next Actions</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>情景</th>
+            <th>首单量（估算）</th>
+            <th>CPA（元）</th>
+            <th>首单毛利 ROI</th>
+            <th>90天 ROI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>保守</td>
+            <td>4,900</td>
+            <td>163</td>
+            <td>0.51</td>
+            <td>0.86</td>
+          </tr>
+          <tr>
+            <td>基准</td>
+            <td>6,165</td>
+            <td>130</td>
+            <td>0.64</td>
+            <td>1.14</td>
+          </tr>
+          <tr>
+            <td>乐观</td>
+            <td>7,320</td>
+            <td>109</td>
+            <td>0.75</td>
+            <td>1.43</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="risk"><strong>Risk 1:</strong> 竞价成本上行会先抬高 CPM，再传导至 CPA。[S4][S7]</div>
+      <div class="risk"><strong>Risk 2:</strong> 素材疲劳导致 CTR 下滑，需周度轮换素材并预留测试预算。[S8]</div>
+      <div class="risk"><strong>Risk 3:</strong> 复购率低于假设将直接拖累 ROI，需要小程序会员与补货机制兜底。[S2][S3]</div>
+
+      <p><strong>Next Actions</strong></p>
+      <p>1. 第 1-2 周完成 12 套素材 A/B（风味教育、冲煮教程、产地故事）。</p>
+      <p>2. 建立周度阈值：CTR &lt; 1.2% 或 CPA &gt; 170 元触发自动降档与素材替换。</p>
+      <p>3. 第 4 周上线小程序会员任务（补货券、冲煮课权益），将“首单投放”转为“90天经营”。</p>
+    </section>
+
+    <section class="card module">
+      <h2>Source Index</h2>
+      <ol class="source-list">
+        <li>[S1] 小红书行业投放数据（食品饮料/餐饮服务），<code>.agents/skills/media-planning/xiaohongshu_ad_data.json</code>（accessed: 2026-02-12）</li>
+        <li>[S2] Tencent Quarterly Results, https://www.tencent.com/en-us/investors/quarter-result.html（accessed: 2026-02-12）</li>
+        <li>[S3] Tencent Announces 2025 Third Quarter Results (PDF), https://static.www.tencent.com/uploads/2025/11/13/a33b6f19738615834787623f17d20ba3.pdf（published: 2025-11-13, accessed: 2026-02-12）</li>
+        <li>[S4] Kuaishou Technology Announces Second Quarter and Interim 2025 Unaudited Financial Results, https://ir.kuaishou.com/news-releases/news-release-details/kuaishou-technology-announces-second-quarter-and-interim-2025/（published: 2025-08-21, accessed: 2026-02-12）</li>
+        <li>[S5] Bilibili Inc. Announces Third Quarter 2025 Financial Results, https://www.globenewswire.com/news-release/2025/11/13/3187072/0/en/Bilibili-Inc-Announces-Third-Quarter-2025-Financial-Results.html（published: 2025-11-13, accessed: 2026-02-12）</li>
+        <li>[S6] 第56次《中国互联网络发展状况统计报告》发布, https://www.cnnic.net/n4/2025/0721/c326-11327.html（published: 2025-07-21, accessed: 2026-02-12）</li>
+        <li>[S7] Luckin Coffee Announces Second Quarter 2025 Financial Results, https://investor.lkcoffee.com/news-releases/news-release-details/luckin-coffee-announces-second-quarter-2025-financial-results（published: 2025-07-30, accessed: 2026-02-12）</li>
+        <li>[S8] 中国数字媒介渠道基准数据参考，<code>.agents/skills/media-planning/channel-benchmarks.md</code>（accessed: 2026-02-12）</li>
+      </ol>
+    </section>
+  </div>
+
+  <script>
+    const palette = {
+      brand: '#2f5e4e',
+      soft1: '#7e978c',
+      soft2: '#b2beb8',
+      soft3: '#4f6f63',
+      accent: '#a66a3f',
+      gray: '#8a8f8b'
+    };
+
+    function createCharts() {
+      const budget = echarts.init(document.getElementById('budgetChart'));
+      budget.setOption({
+        tooltip: { trigger: 'item', formatter: '{b}<br/>预算: ¥{c} ({d}%)' },
+        legend: { bottom: 0 },
+        series: [{
+          type: 'pie',
+          radius: ['42%', '70%'],
+          center: ['50%', '45%'],
+          itemStyle: { borderColor: '#fff', borderWidth: 2 },
+          label: { formatter: '{b}: {d}%' },
+          data: [
+            { value: 320000, name: '小红书 40%' },
+            { value: 200000, name: '抖音 25%' },
+            { value: 160000, name: '微信生态 20%' },
+            { value: 80000, name: 'B站 10%' },
+            { value: 40000, name: '快手 5%' }
+          ],
+          color: [palette.brand, palette.soft1, palette.soft3, palette.soft2, palette.gray]
+        }]
+      });
+
+      const flight = echarts.init(document.getElementById('flightChart'));
+      flight.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        legend: { top: 0 },
+        xAxis: {
+          type: 'category',
+          data: ['4月上', '4月下', '5月上', '5月下', '6月上', '6月中(618)', '6月下']
+        },
+        yAxis: { type: 'value', name: '周预算(万元)' },
+        dataZoom: [{ type: 'inside' }, { type: 'slider', bottom: 0 }],
+        series: [
+          {
+            name: '品牌教育',
+            type: 'bar',
+            stack: 'budget',
+            data: [3.8, 3.5, 3.0, 2.4, 2.0, 1.6, 1.2],
+            color: palette.soft1
+          },
+          {
+            name: '效果转化',
+            type: 'bar',
+            stack: 'budget',
+            data: [1.4, 1.8, 2.8, 3.8, 4.6, 5.4, 4.2],
+            color: palette.brand
+          },
+          {
+            name: '复购承接',
+            type: 'bar',
+            stack: 'budget',
+            data: [0.0, 0.2, 0.5, 0.8, 1.0, 1.2, 1.4],
+            color: palette.accent
+          }
+        ]
+      });
+
+      const outcome = echarts.init(document.getElementById('outcomeChart'));
+      outcome.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+        legend: { top: 0 },
+        xAxis: { type: 'category', data: ['保守', '基准', '乐观'] },
+        yAxis: [
+          { type: 'value', name: '首单量', min: 0, max: 8500 },
+          { type: 'value', name: 'CPA(元)', min: 80, max: 190 }
+        ],
+        series: [
+          {
+            name: '首单量',
+            type: 'bar',
+            data: [4900, 6165, 7320],
+            color: palette.brand
+          },
+          {
+            name: 'CPA',
+            type: 'line',
+            yAxisIndex: 1,
+            data: [163, 130, 109],
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: { width: 3 },
+            itemStyle: { color: palette.accent }
+          }
+        ]
+      });
+
+      const roi = echarts.init(document.getElementById('roiChart'));
+      roi.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        legend: { top: 0 },
+        xAxis: { type: 'category', data: ['保守', '基准', '乐观'] },
+        yAxis: { type: 'value', name: 'ROI', min: 0, max: 1.8 },
+        series: [
+          {
+            name: '首单毛利 ROI',
+            type: 'bar',
+            data: [0.51, 0.64, 0.75],
+            color: palette.soft2
+          },
+          {
+            name: '90天 ROI',
+            type: 'line',
+            data: [0.86, 1.14, 1.43],
+            symbol: 'diamond',
+            symbolSize: 9,
+            lineStyle: { width: 3, color: palette.brand },
+            itemStyle: { color: palette.brand }
+          }
+        ]
+      });
+
+      const audience = echarts.init(document.getElementById('audienceChart'));
+      audience.setOption({
+        tooltip: {},
+        legend: { top: 0 },
+        radar: {
+          indicator: [
+            { name: '内容种草', max: 10 },
+            { name: '兴趣定向', max: 10 },
+            { name: '搜索承接', max: 10 },
+            { name: '交易闭环', max: 10 },
+            { name: '复购运营', max: 10 }
+          ],
+          splitLine: { lineStyle: { color: '#d9dfda' } },
+          splitArea: { areaStyle: { color: ['#fbfcfb', '#f3f6f4'] } }
+        },
+        series: [
+          {
+            type: 'radar',
+            data: [
+              { name: '小红书', value: [9, 8, 8, 6, 5] },
+              { name: '抖音', value: [8, 8, 7, 7, 5] },
+              { name: '微信生态', value: [6, 6, 7, 9, 9] },
+              { name: 'B站', value: [8, 6, 4, 4, 4] },
+              { name: '快手', value: [6, 7, 5, 6, 4] }
+            ],
+            areaStyle: { opacity: 0.06 }
+          }
+        ],
+        color: [palette.brand, palette.soft1, palette.accent, palette.soft3, palette.gray]
+      });
+
+      const chartList = [budget, flight, outcome, roi, audience];
+      window.addEventListener('resize', () => chartList.forEach(c => c.resize()));
+    }
+
+    createCharts();
+  </script>
+</body>
+</html>

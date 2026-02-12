@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Q4 媒介规划可审计报告</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #1f4a6e;
+      --secondary-color: #5c7f99;
+      --accent-color: #be6a15;
+      --bg-light: #f3f5f7;
+      --paper: #ffffff;
+      --text-main: #14212b;
+      --text-muted: #5f6c77;
+      --border-color: #d8dfe5;
+      --risk: #9f2f24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(31,74,110,0.09), transparent 42%),
+        radial-gradient(circle at 92% 0%, rgba(190,106,21,0.08), transparent 30%),
+        var(--bg-light);
+      font-family: "PingFang SC", "Noto Sans SC", "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+    .page { max-width: 1200px; margin: 0 auto; padding: 28px 16px 42px; }
+    .panel {
+      background: var(--paper);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .cover {
+      padding: 26px;
+      border-top: 6px solid var(--primary-color);
+      background: linear-gradient(130deg, #f8fbfd 0%, #ffffff 62%);
+    }
+    .cover h1 {
+      margin: 0;
+      font-size: 31px;
+      font-family: "Source Han Serif SC", "Songti SC", serif;
+      letter-spacing: 0.4px;
+    }
+    .sub {
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .kpi-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .kpi {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fcfdff;
+    }
+    .kpi .label { color: var(--text-muted); font-size: 12px; }
+    .kpi .value { font-size: 23px; font-weight: 700; margin-top: 3px; }
+    .kpi .note { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 700;
+      padding-left: 10px;
+      border-left: 4px solid var(--primary-color);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 12px;
+    }
+    .grid-2-equal {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+    .chart { width: 100%; height: 350px; border: 1px solid var(--border-color); border-radius: 8px; }
+
+    .logic-path {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+    .logic-step {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      background: #f9fbfc;
+      position: relative;
+    }
+    .logic-step .idx {
+      display: inline-block;
+      background: var(--primary-color);
+      color: #fff;
+      border-radius: 12px;
+      font-size: 11px;
+      padding: 2px 8px;
+      margin-bottom: 6px;
+    }
+    .logic-step h4 { margin: 0 0 6px; font-size: 14px; }
+    .logic-step p { margin: 0; font-size: 12px; color: var(--text-muted); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border: 1px solid var(--border-color); padding: 8px; text-align: left; vertical-align: top; }
+    th { background: #f4f8fb; }
+    .tag {
+      display: inline-block;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1px 8px;
+      font-size: 11px;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+    .risk-item {
+      border-left: 4px solid var(--risk);
+      padding-left: 10px;
+      margin-bottom: 8px;
+      color: #2c3944;
+    }
+    .foot { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+    .source li { margin: 6px 0; }
+    .toc a { color: var(--primary-color); text-decoration: none; }
+
+    @media (max-width: 980px) {
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .grid-2, .grid-2-equal { grid-template-columns: 1fr; }
+      .logic-path { grid-template-columns: 1fr; }
+      .chart { height: 300px; }
+    }
+    @media (max-width: 600px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .cover h1 { font-size: 26px; }
+      .page { padding: 16px 12px 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="panel cover" id="top">
+      <h1>Q4 大促媒介规划（可审计版）</h1>
+      <div class="sub">某知名饮料品牌 | 总预算 2,000 万 RMB | 报告日期 2026-02-12 | Confidential</div>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="label">基准 ROI(GMV)</div>
+          <div class="value">0.96x</div>
+          <div class="note">归因 GMV ≈ 1,911 万（估算）[S1][S2]</div>
+        </div>
+        <div class="kpi">
+          <div class="label">争议陈述 A</div>
+          <div class="value">6.25x</div>
+          <div class="note">抖音 800 万 -> 5,000 万 GMV [S1]</div>
+        </div>
+        <div class="kpi">
+          <div class="label">争议陈述 B</div>
+          <div class="value">CPM=25</div>
+          <div class="note">小红书 300 万 -> 1.2 亿人次反推 [S1]</div>
+        </div>
+        <div class="kpi">
+          <div class="label">可审计结论</div>
+          <div class="value">部分可真</div>
+          <div class="note">均存在口径包装空间，需明细审计 [S2][S9]</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel toc">
+      <h2 class="section-title">目录</h2>
+      <p><a href="#summary">1. Executive Summary</a> | <a href="#reasoning">2. Strategic Reasoning Path</a> | <a href="#mix">3. Media Mix & Allocation</a> | <a href="#flight">4. Flight Plan</a> | <a href="#projection">5. Outcome Projection</a> | <a href="#audit">6. 审计判定</a> | <a href="#risk">7. 风险与下一步</a> | <a href="#sources">8. Source Index</a></p>
+    </section>
+
+    <section class="panel" id="summary">
+      <h2 class="section-title">Executive Summary</h2>
+      <div class="card">
+        <p>本方案用统一漏斗 `预算->曝光->点击->转化->GMV->毛利` 替代“只报曝光/只报GMV”，确保 CFO 可复算每个渠道的投入产出。[S1][S9]</p>
+        <p>预算建议为“转化主阵地 + 种草 + 私域复购 + 搜索收口”协同模型，避免单渠道归因高估。[S3][S4][S7]</p>
+        <p>对历史两条争议陈述的判定：均可能包含真实成分，但都不足以单独证明商业效果，必须要求原始明细审计。[S1][S2][S9]</p>
+      </div>
+    </section>
+
+    <section class="panel" id="reasoning">
+      <h2 class="section-title">Strategic Reasoning Path</h2>
+      <div class="logic-path">
+        <div class="logic-step"><span class="idx">Step 1</span><h4>目标拆解</h4><p>消费盘增长温和，Q4 需同时追求品牌与生意结果。[S5][S6]</p></div>
+        <div class="logic-step"><span class="idx">Step 2</span><h4>人群分层</h4><p>核心购买人群与扩展种草人群分层投放，并执行频控去重。[S1][S5]</p></div>
+        <div class="logic-step"><span class="idx">Step 3</span><h4>渠道协同</h4><p>短视频承接转化，内容平台建心智，私域与搜索做收口。[S3][S4][S7]</p></div>
+        <div class="logic-step"><span class="idx">Step 4</span><h4>预算建模</h4><p>以可复算参数建模，并预留测试预算进行周度纠偏。[S1][S2]</p></div>
+        <div class="logic-step"><span class="idx">Step 5</span><h4>审计闭环</h4><p>所有关键数字必须回收到日志与订单明细验证真实性。[S8][S9]</p></div>
+      </div>
+    </section>
+
+    <section class="panel" id="mix">
+      <h2 class="section-title">Media Mix & Allocation</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div id="budgetChart" class="chart"></div>
+          <div class="foot">预算结构（估算）：抖音 40%、小红书 20%、微信 15%、B站 10%、快手 7.5%、搜索/电商 5%、测试归因 2.5% [S1][S2][S3][S4]</div>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>渠道</th><th>预算(万)</th><th>角色</th><th>数据标签</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>抖音</td><td>800</td><td>规模转化主阵地</td><td><span class="tag">估算</span></td></tr>
+              <tr><td>小红书</td><td>400</td><td>种草与心智沉淀</td><td><span class="tag">参考[S2]</span></td></tr>
+              <tr><td>微信生态</td><td>300</td><td>私域承接与复购</td><td><span class="tag">估算</span></td></tr>
+              <tr><td>B站</td><td>200</td><td>深度内容沟通</td><td><span class="tag">估算</span></td></tr>
+              <tr><td>快手</td><td>150</td><td>补充覆盖与效率</td><td><span class="tag">估算</span></td></tr>
+              <tr><td>搜索/电商站内</td><td>100</td><td>需求收口成交</td><td><span class="tag">估算</span></td></tr>
+              <tr><td>测试与归因</td><td>50</td><td>AB 测试与校准</td><td><span class="tag">固定成本</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="flight">
+      <h2 class="section-title">Flight Plan (Q4)</h2>
+      <div class="card">
+        <div id="flightChart" class="chart"></div>
+        <div class="foot">节奏：10月蓄水 25%、11月爆发 45%、12月回补 30%（估算）[S1][S6]</div>
+      </div>
+    </section>
+
+    <section class="panel" id="projection">
+      <h2 class="section-title">Outcome Projection</h2>
+      <div class="grid-2-equal">
+        <div class="card">
+          <div id="outcomeChart" class="chart"></div>
+          <div class="foot">渠道级转化与 GMV（估算，基准情景）[S1][S2]</div>
+        </div>
+        <div class="card">
+          <div id="roiChart" class="chart"></div>
+          <div class="foot">情景区间：保守 0.43x / 基准 0.96x / 乐观 1.52x [S1][S2][S6]</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div id="audienceChart" class="chart"></div>
+        <div class="foot">人群触达策略评分（用于优先级排序，不代表实测转化率）[S1][S5]</div>
+      </div>
+    </section>
+
+    <section class="panel" id="audit">
+      <h2 class="section-title">争议数字审计判定（True vs Packaged）</h2>
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th>陈述</th><th>可验证部分</th><th>包装风险</th><th>当前判定</th><th>必须补交材料</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>抖音 800 万 -> 5,000 万 GMV</td>
+              <td>若高客单/高CVR/强货盘可阶段性实现</td>
+              <td>归因窗口过宽、重复归因、只报 GMV 不报毛利</td>
+              <td><strong>高目标，待审计</strong></td>
+              <td>订单明细、归因窗口、去重逻辑、退货口径</td>
+            </tr>
+            <tr>
+              <td>小红书 300 万 -> 1.2 亿人次</td>
+              <td>曝光人次口径在低 CPM 组合下可能发生</td>
+              <td>人次不等于去重人数，不等于有效触达和成交</td>
+              <td><strong>曝光可参考，业绩不足证</strong></td>
+              <td>去重触达、互动质量、站外转化链路</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="risk">
+      <h2 class="section-title">Risk Mitigation & Next Steps</h2>
+      <div class="card">
+        <div class="risk-item"><strong>风险 1：</strong>高曝光但低转化。应统一“有效触达”定义，按去重与频次管理。</div>
+        <div class="risk-item"><strong>风险 2：</strong>跨平台重复记功。应统一点击/曝光归因窗口，建立脚本可复核机制。</div>
+        <div class="risk-item"><strong>风险 3：</strong>参数漂移。应建立周度偏差阈值（>20% 自动调仓）。</div>
+        <p><strong>30 天执行动作：</strong></p>
+        <ol>
+          <li>回收去年 Q4 全渠道投放日志与订单明细，按同一模型重算真实 ROI。</li>
+          <li>设置 10%-15% 实验预算，做素材/人群/出价 AB 测试并固化迁移规则。</li>
+          <li>上线 CFO 看板：花费、去重触达、转化、GMV、毛利 ROI 五指标同屏。</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="panel" id="sources">
+      <h2 class="section-title">Source Index</h2>
+      <ul class="source">
+        <li>[S1] <code>v3/test-3/brief.md</code></li>
+        <li>[S2] <code>.agents/skills/media-planning/xiaohongshu_ad_data.json</code></li>
+        <li>[S3] <a href="https://static.www.tencent.com/uploads/2025/11/13/a33b6f19738615834787623f17d20ba3.pdf" target="_blank">Tencent 2025Q3 Results</a></li>
+        <li>[S4] <a href="https://www.nasdaq.com/press-release/kuaishou-technology-announces-third-quarter-2025-unaudited-financial-results-2025-11" target="_blank">Kuaishou 2025Q3 Results</a></li>
+        <li>[S5] <a href="https://www.cnnic.net/n4/2025/0721/c326-11327.html" target="_blank">CNNIC 第56次报告发布</a></li>
+        <li>[S6] <a href="https://www.stats.gov.cn/sj/zxfbhjd/202601/t20260119_1962323.html" target="_blank">国家统计局：2025 年社零数据</a></li>
+        <li>[S7] <a href="https://www.questmobile.com.cn/research/report-new/198" target="_blank">QuestMobile 2025 中国移动互联网半年报告</a></li>
+        <li>[S8] <a href="https://www.samr.gov.cn/ggjgs/sjdt/gzdt/art/2023/art_2339593b2111448fbb8bdee5144eda61.html" target="_blank">互联网广告管理办法</a></li>
+        <li>[S9] <a href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2023/art_5474cf75173c45d6a0379730fb4e8d97.html" target="_blank">广告法（SAMR）</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    const palette = ['#1f4a6e', '#5c7f99', '#839aad', '#a3b4c2', '#c2cdd6', '#d5dde4', '#e6edf2'];
+    const textColor = '#14212b';
+
+    const budgetChart = echarts.init(document.getElementById('budgetChart'));
+    budgetChart.setOption({
+      color: palette,
+      tooltip: { trigger: 'item' },
+      legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 } },
+      series: [{
+        type: 'pie',
+        radius: ['43%', '72%'],
+        center: ['50%', '43%'],
+        label: { formatter: '{b}: {d}%', color: textColor },
+        data: [
+          { name: '抖音', value: 800 },
+          { name: '小红书', value: 400 },
+          { name: '微信生态', value: 300 },
+          { name: 'B站', value: 200 },
+          { name: '快手', value: 150 },
+          { name: '搜索/电商站内', value: 100 },
+          { name: '测试与归因', value: 50 }
+        ]
+      }]
+    });
+
+    const flightChart = echarts.init(document.getElementById('flightChart'));
+    flightChart.setOption({
+      color: ['#1f4a6e', '#be6a15'],
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { data: ['预算(万元)', '关键动作数'], textStyle: { color: textColor } },
+      xAxis: { type: 'category', data: ['10月 蓄水', '11月 爆发', '12月 回补'] },
+      yAxis: [
+        { type: 'value', name: '预算(万元)' },
+        { type: 'value', name: '动作数' }
+      ],
+      series: [
+        { name: '预算(万元)', type: 'bar', data: [500, 900, 600], barWidth: 44 },
+        { name: '关键动作数', type: 'line', yAxisIndex: 1, data: [6, 11, 8], smooth: true, symbolSize: 8 }
+      ]
+    });
+
+    const outcomeChart = echarts.init(document.getElementById('outcomeChart'));
+    outcomeChart.setOption({
+      color: ['#1f4a6e', '#be6a15'],
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { data: ['转化量(单)', '归因GMV(万元)'], textStyle: { color: textColor } },
+      grid: { left: 52, right: 20, top: 40, bottom: 70 },
+      xAxis: {
+        type: 'category',
+        data: ['抖音', '小红书', '微信生态', 'B站', '快手', '搜索/电商'],
+        axisLabel: { rotate: 20 }
+      },
+      yAxis: [
+        { type: 'value', name: '转化量' },
+        { type: 'value', name: 'GMV(万元)' }
+      ],
+      dataZoom: [{ type: 'inside' }, { type: 'slider', height: 14 }],
+      series: [
+        { name: '转化量(单)', type: 'bar', data: [96711, 20253, 19345, 4073, 14700, 22059] },
+        { name: '归因GMV(万元)', type: 'line', yAxisIndex: 1, data: [1015.5, 232.9, 228.3, 42.8, 144.1, 247.1], smooth: true }
+      ]
+    });
+
+    const roiChart = echarts.init(document.getElementById('roiChart'));
+    roiChart.setOption({
+      color: ['#5c7f99', '#1f4a6e'],
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { data: ['归因GMV(万元)', 'ROI(GMV)'], textStyle: { color: textColor } },
+      xAxis: { type: 'category', data: ['保守', '基准', '乐观'] },
+      yAxis: [
+        { type: 'value', name: 'GMV(万元)' },
+        { type: 'value', name: 'ROI', min: 0, max: 1.6 }
+      ],
+      series: [
+        { name: '归因GMV(万元)', type: 'bar', data: [860, 1911, 3042] },
+        { name: 'ROI(GMV)', type: 'line', yAxisIndex: 1, data: [0.43, 0.96, 1.52], smooth: true }
+      ]
+    });
+
+    const audienceChart = echarts.init(document.getElementById('audienceChart'));
+    audienceChart.setOption({
+      color: ['#1f4a6e', '#be6a15'],
+      tooltip: {},
+      legend: { bottom: 0, textStyle: { color: textColor } },
+      radar: {
+        indicator: [
+          { name: '购买频次', max: 100 },
+          { name: '价格敏感', max: 100 },
+          { name: '内容种草敏感', max: 100 },
+          { name: '促销响应', max: 100 },
+          { name: '复购潜力', max: 100 }
+        ],
+        splitArea: { areaStyle: { color: ['#f8fbfe', '#eff5fa'] } }
+      },
+      series: [{
+        type: 'radar',
+        data: [
+          { name: '核心购买人群（估算）', value: [86, 72, 68, 88, 81] },
+          { name: '扩展种草人群（估算）', value: [58, 84, 91, 76, 63] }
+        ]
+      }]
+    });
+
+    window.addEventListener('resize', () => {
+      budgetChart.resize();
+      flightChart.resize();
+      outcomeChart.resize();
+      roiChart.resize();
+      audienceChart.resize();
+    });
+  </script>
+</body>
+</html>

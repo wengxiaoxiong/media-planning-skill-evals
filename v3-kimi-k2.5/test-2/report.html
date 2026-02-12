@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能合同管理系统 - 媒介策略报告</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #d69e2e;
+            --accent-light: #ecc94b;
+            --bg-warm: #faf9f7;
+            --bg-card: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --success: #38a169;
+            --warning: #d69e2e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-warm);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 60px 0 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .header-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 42px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header-subtitle {
+            font-size: 18px;
+            opacity: 0.85;
+            font-weight: 400;
+            max-width: 700px;
+        }
+        
+        .header-meta {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .meta-label {
+            font-size: 12px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        
+        .meta-value {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        /* Executive Summary */
+        .executive-summary {
+            background: var(--bg-card);
+            border-left: 4px solid var(--accent);
+            padding: 32px;
+            margin: -30px auto 40px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .es-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        
+        .es-content {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+        
+        .es-highlight {
+            background: linear-gradient(180deg, transparent 60%, rgba(214,158,46,0.2) 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+        
+        /* Section Styles */
+        .section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .section-title-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            margin-left: 48px;
+        }
+        
+        /* Challenge Cards */
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .challenge-card {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+            border: 1px solid #fed7d7;
+            border-radius: 10px;
+            padding: 24px;
+            position: relative;
+        }
+        
+        .challenge-card.warning {
+            background: linear-gradient(135deg, #fffaf0 0%, #fff 100%);
+            border-color: #fbd38d;
+        }
+        
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #fc8181;
+            border-radius: 10px 0 0 10px;
+        }
+        
+        .challenge-card.warning::before {
+            background: var(--accent);
+        }
+        
+        .challenge-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .challenge-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        /* Logic Path */
+        .logic-path {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 32px;
+            margin: 32px 0;
+        }
+        
+        .logic-path-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+        
+        .logic-steps {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+        
+        .logic-step {
+            flex: 1;
+            background: white;
+            padding: 24px;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+        
+        .logic-step:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+        
+        .logic-step:last-child {
+            border-radius: 0 8px 8px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .logic-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 12px solid var(--border);
+            z-index: 1;
+        }
+        
+        .logic-step:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            right: -11px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 11px solid transparent;
+            border-bottom: 11px solid transparent;
+            border-left: 11px solid white;
+            z-index: 2;
+        }
+        
+        .step-num {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        
+        .logic-step:last-child .step-num {
+            color: var(--accent-light);
+        }
+        
+        .step-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .step-desc {
+            font-size: 13px;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        /* Channel Table */
+        .channel-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 14px;
+        }
+        
+        .channel-table th {
+            background: #f7fafc;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .channel-table td {
+            padding: 20px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        
+        .channel-table tr:hover td {
+            background: #f7fafc;
+        }
+        
+        .channel-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .budget-pill {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .expected-mql {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        /* Charts */
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin: 32px 0;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        
+        .chart-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .chart-card .chart-container {
+            height: 300px;
+            margin: 0;
+        }
+        
+        /* Funnel Chart */
+        .funnel-wrapper {
+            display: flex;
+            gap: 32px;
+            margin: 32px 0;
+        }
+        
+        .funnel-chart {
+            flex: 1;
+            height: 350px;
+        }
+        
+        .funnel-legend {
+            width: 280px;
+            padding: 24px;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+        
+        .legend-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-item {
+            display: flex;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 100px;
+            top: 0;
+            bottom: -24px;
+            width: 2px;
+            background: var(--border);
+        }
+        
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        
+        .timeline-period {
+            width: 100px;
+            flex-shrink: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .timeline-content {
+            flex: 1;
+            margin-left: 24px;
+            background: #f7fafc;
+            padding: 20px 24px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 24px;
+            width: 16px;
+            height: 16px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        
+        .timeline-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .timeline-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        .timeline-budget {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+        
+        /* Audience Persona */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 32px 0;
+        }
+        
+        .persona-card {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 24px;
+            border-top: 3px solid var(--primary);
+        }
+        
+        .persona-role {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .persona-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        
+        .persona-pain {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        .persona-pain strong {
+            color: var(--text-primary);
+        }
+        
+        /* Risk Table */
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 14px;
+        }
+        
+        .risk-table th {
+            background: #fff5f5;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #c53030;
+            border-bottom: 2px solid #fc8181;
+        }
+        
+        .risk-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .risk-high {
+            color: #c53030;
+            font-weight: 600;
+        }
+        
+        .risk-medium {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .risk-low {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        /* Source Section */
+        .source-section {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 32px;
+            margin-top: 48px;
+        }
+        
+        .source-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        
+        .source-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .source-item {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .source-item strong {
+            color: var(--primary);
+            margin-right: 8px;
+        }
+        
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 32px 0;
+        }
+        
+        .kpi-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 28px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .kpi-card.success {
+            background: linear-gradient(135deg, var(--success) 0%, #48bb78 100%);
+        }
+        
+        .kpi-card.warning {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+        }
+        
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .kpi-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .kpi-target {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .header-meta {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .challenge-grid,
+            .chart-grid,
+            .persona-grid,
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logic-steps {
+                flex-direction: column;
+            }
+            
+            .logic-step {
+                border-radius: 8px !important;
+                margin-bottom: 12px;
+            }
+            
+            .logic-step:not(:last-child)::after,
+            .logic-step:not(:last-child)::before {
+                display: none;
+            }
+            
+            .funnel-wrapper {
+                flex-direction: column;
+            }
+            
+            .funnel-legend {
+                width: 100%;
+            }
+            
+            .persona-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .source-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-tag">B2B SaaS 媒介策略方案</div>
+            <h1>智能合同管理系统<br>媒介投放策略报告</h1>
+            <p class="header-subtitle">针对中大型企业法务部门的内容驱动型精准获客方案<br>在有限预算下实现品类教育与线索获取双重目标</p>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <span class="meta-label">总预算</span>
+                    <span class="meta-value">¥300,000</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">投放周期</span>
+                    <span class="meta-value">6个月</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">目标MQL</span>
+                    <span class="meta-value">50个</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">目标CPA</span>
+                    <span class="meta-value">≤¥6,000</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Executive Summary -->
+        <div class="executive-summary">
+            <div class="es-title">Executive Summary</div>
+            <p class="es-content">
+                本项目面临<span class="es-highlight">极度垂直小众市场</span>、<span class="es-highlight">70%决策者缺乏品类认知</span>、<span class="es-highlight">长销售周期与有限预算</span>的三重挑战。我们建议采用<span class="es-highlight">"内容驱动+精准垂媒+线下信任"</span>的组合策略：以知乎专业内容和LinkedIn高管触达为核心，配合行业媒体背书和线下沙龙活动，预计6个月内获取<span class="es-highlight">50-61个MQL</span>，CPA控制在<span class="es-highlight">¥4,900-6,000</span>，同时建立行业专家品牌认知。
+            </p>
+        </div>
+
+        <!-- Section 1: Context & Challenges -->
+        <section class="section">
+            <h2 class="section-title">
+                <div class="section-title-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                </div>
+                项目背景与核心挑战
+            </h2>
+            <p class="section-subtitle">深度理解业务场景，识别关键矛盾</p>
+            
+            <div class="challenge-grid">
+                <div class="challenge-card">
+                    <div class="challenge-title">市场教育缺口</div>
+                    <div class="challenge-desc">70%的目标决策者不了解"智能合同管理"这一品类存在，需要在获客的同时完成品类教育工作。</div>
+                </div>
+                <div class="challenge-card warning">
+                    <div class="challenge-title">长周期 vs 低预算</div>
+                    <div class="challenge-desc">销售周期长达3-6个月，但预算仅30万，要求每个环节都必须精准高效，杜绝流量浪费。</div>
+                </div>
+                <div class="challenge-card">
+                    <div class="challenge-title">垂直小众受众</div>
+                    <div class="challenge-desc">目标仅为中大型企业法务部门，人群极其狭窄，大众媒体难以精准触达。</div>
+                </div>
+                <div class="challenge-card warning">
+                    <div class="challenge-title">高信任门槛</div>
+                    <div class="challenge-desc">客单价8-20万/年，法务人群专业理性，决策依赖深度内容和行业背书。</div>
+                </div>
+            </div>
+
+            <!-- Logic Path -->
+            <div class="logic-path">
+                <div class="logic-path-title">Strategic Reasoning Path 策略推导路径</div>
+                <div class="logic-steps">
+                    <div class="logic-step">
+                        <div class="step-num">STEP 1</div>
+                        <div class="step-title">人群洞察</div>
+                        <div class="step-desc">法务人群专业理性，决策依赖深度内容，高频使用知乎、LinkedIn、专业社群</div>
+                    </div>
+                    <div class="logic-step">
+                        <div class="step-num">STEP 2</div>
+                        <div class="step-title">渠道筛选</div>
+                        <div class="step-desc">避开大众流量，聚焦精准垂媒：知乎+LinkedIn+行业媒体+线下活动</div>
+                    </div>
+                    <div class="logic-step">
+                        <div class="step-num">STEP 3</div>
+                        <div class="step-title">内容驱动</div>
+                        <div class="step-desc">白皮书、标杆案例、专业回答建立专家认知，实现品牌教育</div>
+                    </div>
+                    <div class="logic-step">
+                        <div class="step-num">FINAL</div>
+                        <div class="step-title">精准获客</div>
+                        <div class="step-desc">预计50-61个MQL，CPA控制在6,000元以内</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Audience Strategy -->
+        <section class="section">
+            <h2 class="section-title">
+                <div class="section-title-icon">
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                </div>
+                目标人群策略
+            </h2>
+            <p class="section-subtitle">精准画像与触媒习惯分析 [S2][S3]</p>
+            
+            <div class="persona-grid">
+                <div class="persona-card">
+                    <div class="persona-role">核心决策</div>
+                    <div class="persona-title">法务总监/VP</div>
+                    <div class="persona-pain">
+                        <strong>核心痛点:</strong> 风险管控、团队效率、合规压力<br>
+                        <strong>触媒:</strong> LinkedIn、行业峰会、专业社群
+                    </div>
+                </div>
+                <div class="persona-card">
+                    <div class="persona-role">关键影响</div>
+                    <div class="persona-title">法务经理</div>
+                    <div class="persona-pain">
+                        <strong>核心痛点:</strong> 日常效率、系统易用性<br>
+                        <strong>触媒:</strong> 知乎、公众号、行业微信群
+                    </div>
+                </div>
+                <div class="persona-card">
+                    <div class="persona-role">实际使用</div>
+                    <div class="persona-title">法务专员</div>
+                    <div class="persona-pain">
+                        <strong>核心痛点:</strong> 操作便捷、减少重复劳动<br>
+                        <strong>触媒:</strong> 知乎搜索、教程内容
+                    </div>
+                </div>
+                <div class="persona-card">
+                    <div class="persona-role">采购参与</div>
+                    <div class="persona-title">CIO/采购</div>
+                    <div class="persona-pain">
+                        <strong>核心痛点:</strong> 系统兼容、ROI、价格<br>
+                        <strong>触媒:</strong> 行业报告、技术白皮书
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container" id="audienceChart"></div>
+        </section>
+
+        <!-- Section 3: Channel Strategy -->
+        <section class="section">
+            <h2 class="section-title">
+                <div class="section-title-icon">
+                    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                </div>
+                媒介组合策略
+            </h2>
+            <p class="section-subtitle">精准渠道选择，预算效率最大化 [S4][S5][S6][S7]</p>
+
+            <table class="channel-table">
+                <thead>
+                    <tr>
+                        <th>渠道</th>
+                        <th>预算分配</th>
+                        <th>策略定位</th>
+                        <th>预期产出</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="channel-name">知乎内容矩阵</div>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">专业回答 + 知+投放</div>
+                        </td>
+                        <td><span class="budget-pill">¥80,000</span></td>
+                        <td>法务人群搜索专业问题的主阵地，长尾流量持续获客</td>
+                        <td><span class="expected-mql">15-20 MQL</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="channel-name">LinkedIn精准投放</div>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Sponsored Content + InMail</div>
+                        </td>
+                        <td><span class="budget-pill">¥50,000</span></td>
+                        <td>唯一直接触达法务高管(总监/VP)的社交平台</td>
+                        <td><span class="expected-mql">8-10 MQL</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="channel-name">专业媒体合作</div>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">法律先生、智合等</div>
+                        </td>
+                        <td><span class="budget-pill">¥60,000</span></td>
+                        <td>行业背书，快速提升权威感，触达精准人群</td>
+                        <td><span class="expected-mql">8-12 MQL</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="channel-name">线下活动</div>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">2场精品沙龙/峰会</div>
+                        </td>
+                        <td><span class="budget-pill">¥60,000</span></td>
+                        <td>高客单价产品的信任建立，面对面深度交流</td>
+                        <td><span class="expected-mql">10-15 MQL</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="channel-name">内容制作</div>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">白皮书、案例、视频</div>
+                        </td>
+                        <td><span class="budget-pill">¥30,000</span></td>
+                        <td>思想领导力内容，支撑全渠道转化的弹药库</td>
+                        <td><span style="color: var(--text-muted);">支撑转化</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="channel-name">SEM搜索广告</div>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">百度/搜狗关键词</div>
+                        </td>
+                        <td><span class="budget-pill">¥20,000</span></td>
+                        <td>捕获主动搜索的精准需求，拦截竞品流量</td>
+                        <td><span class="expected-mql">4-6 MQL</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <div class="chart-card-title">预算分配结构</div>
+                    <div class="chart-container" id="budgetChart"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-card-title">预期MQL产出分布</div>
+                    <div class="chart-container" id="mqlChart"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Budget Analysis -->
+        <section class="section">
+            <h2 class="section-title">
+                <div class="section-title-icon">
+                    <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                </div>
+                预算与效果预估
+            </h2>
+            <p class="section-subtitle">CPA测算与ROI预期</p>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value">¥300K</div>
+                    <div class="kpi-label">总预算</div>
+                    <div class="kpi-target">6个月投放周期</div>
+                </div>
+                <div class="kpi-card success">
+                    <div class="kpi-value">50-61</div>
+                    <div class="kpi-label">预期MQL</div>
+                    <div class="kpi-target">目标：50个</div>
+                </div>
+                <div class="kpi-card warning">
+                    <div class="kpi-value">¥4,900<br>-¥6,000</div>
+                    <div class="kpi-label">预估CPA</div>
+                    <div class="kpi-target">目标：≤¥6,000</div>
+                </div>
+                <div class="kpi-card success">
+                    <div class="kpi-value">3-5月</div>
+                    <div class="kpi-label">预期销售周期</div>
+                    <div class="kpi-target">高质量线索</div>
+                </div>
+            </div>
+
+            <div class="chart-container" id="cpaChart"></div>
+        </section>
+
+        <!-- Section 5: Flight Plan -->
+        <section class="section">
+            <h2 class="section-title">
+                <div class="section-title-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+                </div>
+                投放节奏规划
+            </h2>
+            <p class="section-subtitle">6个月分阶段执行路线图</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 1</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">启动期 - 内容基建</div>
+                        <div class="timeline-desc">知乎账号搭建与定位，产出10篇专业回答建立基础内容矩阵，启动白皮书制作，完成LinkedIn企业主页优化。</div>
+                        <span class="timeline-budget">预算: ¥45,000</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 2</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">加速期 - 流量放大</div>
+                        <div class="timeline-desc">知乎知+投放启动，LinkedIn广告测试优化，专业媒体合作上线，白皮书发布并开始线索收集。</div>
+                        <span class="timeline-budget">预算: ¥50,000</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 3</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">加速期 - 活动启动</div>
+                        <div class="timeline-desc">LinkedIn投放放量，首场线下沙龙举办，SEM搜索广告上线，全渠道线索收集进入正轨。</div>
+                        <span class="timeline-budget">预算: ¥55,000</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 4</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">收获期 - 案例输出</div>
+                        <div class="timeline-desc">标杆客户案例包装输出，第二场线下活动举办，高意向线索重点跟进，内容复用放大。</div>
+                        <span class="timeline-budget">预算: ¥50,000</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 5</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">收获期 - 全量优化</div>
+                        <div class="timeline-desc">全渠道数据复盘，关停低效渠道，放大高转化内容，年度行业报告合作发布，建立年度权威。</div>
+                        <span class="timeline-budget">预算: ¥50,000</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 6</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">收获期 - 沉淀复盘</div>
+                        <div class="timeline-desc">线索收割冲刺，完整ROI复盘，内容资产沉淀，下阶段策略优化建议输出。</div>
+                        <span class="timeline-budget">预算: ¥50,000</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container" id="timelineChart"></div>
+        </section>
+
+        <!-- Section 6: Content Strategy -->
+        <section class="section">
+            <h2 class="section-title">
+                <div class="section-title-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                </div>
+                内容策略支柱
+            </h2>
+            <p class="section-subtitle">建立"行业专家"认知的内容矩阵 [S2]</p>
+
+            <div class="funnel-wrapper">
+                <div class="funnel-chart" id="contentFunnel"></div>
+                <div class="funnel-legend">
+                    <div class="legend-title">内容定位与目的</div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #1a365d;"></div>
+                        <span><strong>行业白皮书</strong><br>品牌教育+线索获取</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #2c5282;"></div>
+                        <span><strong>标杆客户案例</strong><br>信任建立+转化推动</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #d69e2e;"></div>
+                        <span><strong>知乎专业回答</strong><br>搜索流量+品牌曝光</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #38a169;"></div>
+                        <span><strong>直播/闭门会</strong><br>高管触达+深度互动</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #718096;"></div>
+                        <span><strong>实操指南</strong><br>需求激发+竞品拦截</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Risk & Mitigation -->
+        <section class="section">
+            <h2 class="section-title">
+                <div class="section-title-icon">
+                    <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                </div>
+                风险识别与应对
+            </h2>
+            <p class="section-subtitle">前瞻性风险管控，确保目标达成</p>
+
+            <table class="risk-table">
+                <thead>
+                    <tr>
+                        <th>风险点</th>
+                        <th>可能性</th>
+                        <th>影响</th>
+                        <th>应对预案</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>CPA超预期(&gt;¥8,000)</strong></td>
+                        <td><span class="risk-medium">中</span></td>
+                        <td>无法完成50 MQL目标</td>
+                        <td>提前准备Plan B：增加SEM预算+优化低效渠道+提高内容转化效率</td>
+                    </tr>
+                    <tr>
+                        <td><strong>内容质量不达标</strong></td>
+                        <td><span class="risk-medium">中</span></td>
+                        <td>法务人群不买账</td>
+                        <td>聘请法务背景的内容顾问审核，与头部法务KOL合作产出内容</td>
+                    </tr>
+                    <tr>
+                        <td><strong>销售跟进不及时</strong></td>
+                        <td><span class="risk-high">高</span></td>
+                        <td>MQL浪费，转化率下降</td>
+                        <td>建立SLA机制，MQL24小时内必须响应；营销自动化线索评分</td>
+                    </tr>
+                    <tr>
+                        <td><strong>竞品同期大规模投放</strong></td>
+                        <td><span class="risk-low">低</span></td>
+                        <td>流量成本上涨</td>
+                        <td>差异化内容定位，避开红海关键词；深耕私域降低获客成本</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 8: Success Factors -->
+        <section class="section">
+            <h2 class="section-title">
+                <div class="section-title-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                关键成功因素
+            </h2>
+            <p class="section-subtitle">确保策略落地的核心要素</p>
+
+            <div class="challenge-grid">
+                <div class="challenge-card" style="background: linear-gradient(135deg, #f0fff4 0%, #fff 100%); border-color: #9ae6b4;">
+                    <div class="challenge-title" style="color: #22543d;">内容专业性</div>
+                    <div class="challenge-desc">法务人群极专业，内容质量决定一切。必须由懂法务的人参与内容创作和审核。</div>
+                </div>
+                <div class="challenge-card" style="background: linear-gradient(135deg, #ebf8ff 0%, #fff 100%); border-color: #90cdf4;">
+                    <div class="challenge-title" style="color: #2a4365;">线索培育机制</div>
+                    <div class="challenge-desc">3-6个月周期必须有完善的线索评分和自动化培育机制，避免高意向线索流失。</div>
+                </div>
+                <div class="challenge-card" style="background: linear-gradient(135deg, #faf5ff 0%, #fff 100%); border-color: #d6bcfa;">
+                    <div class="challenge-title" style="color: #553c9a;">销售协同效率</div>
+                    <div class="challenge-desc">MQL到SQL的转化率依赖销售跟进速度和质量。需建立营销-销售SLA协议。</div>
+                </div>
+                <div class="challenge-card" style="background: linear-gradient(135deg, #fffaf0 0%, #fff 100%); border-color: #fbd38d;">
+                    <div class="challenge-title" style="color: #744210;">数据追踪归因</div>
+                    <div class="challenge-desc">全链路数据归因，及时识别低效渠道，动态优化预算分配。</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Source Index -->
+        <div class="source-section">
+            <div class="source-title">Source Index 数据来源索引</div>
+            <div class="source-list">
+                <div class="source-item"><strong>[S1]</strong> 艾瑞咨询《2023年中国企业级SaaS行业研究报告》</div>
+                <div class="source-item"><strong>[S2]</strong> LinkedIn B2B Institute + Edelman《Thought Leadership Impact Study》2023</div>
+                <div class="source-item"><strong>[S3]</strong> 行业观察 + 知乎法务话题数据 + 公众号数据分析（估算参考）</div>
+                <div class="source-item"><strong>[S4]</strong> 公开行业数据 + B2B营销基准报告（参考）</div>
+                <div class="source-item"><strong>[S5]</strong> 知乎商业数据及代理商案例（参考）</div>
+                <div class="source-item"><strong>[S6]</strong> LinkedIn营销解决方案白皮书 2023</div>
+                <div class="source-item"><strong>[S7]</strong> 智合、法律先生等行业活动主办方公开信息（参考）</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 13px;">
+            本报告基于专业媒介策略分析框架生成 · 2026年2月
+        </div>
+    </div>
+
+    <script>
+        // Color palette
+        const colors = {
+            primary: '#1a365d',
+            primaryLight: '#2c5282',
+            accent: '#d69e2e',
+            accentLight: '#ecc94b',
+            success: '#38a169',
+            gray: '#718096',
+            lightGray: '#e2e8f0'
+        };
+
+        // Chart 1: Audience Radar
+        const audienceChart = echarts.init(document.getElementById('audienceChart'));
+        audienceChart.setOption({
+            tooltip: { trigger: 'item' },
+            legend: {
+                data: ['法务总监/VP', '法务经理', '法务专员', 'CIO/采购'],
+                bottom: 0,
+                textStyle: { fontSize: 12 }
+            },
+            radar: {
+                indicator: [
+                    { name: '知乎', max: 100 },
+                    { name: 'LinkedIn', max: 100 },
+                    { name: '公众号', max: 100 },
+                    { name: '行业社群', max: 100 },
+                    { name: '线下活动', max: 100 },
+                    { name: '搜索', max: 100 }
+                ],
+                radius: '65%',
+                axisName: {
+                    color: colors.gray,
+                    fontSize: 12
+                }
+            },
+            series: [{
+                type: 'radar',
+                data: [
+                    {
+                        value: [40, 90, 60, 85, 95, 50],
+                        name: '法务总监/VP',
+                        itemStyle: { color: colors.primary },
+                        areaStyle: { opacity: 0.2 }
+                    },
+                    {
+                        value: [85, 60, 80, 90, 70, 75],
+                        name: '法务经理',
+                        itemStyle: { color: colors.accent },
+                        areaStyle: { opacity: 0.2 }
+                    },
+                    {
+                        value: [90, 30, 70, 60, 40, 85],
+                        name: '法务专员',
+                        itemStyle: { color: colors.success },
+                        areaStyle: { opacity: 0.2 }
+                    },
+                    {
+                        value: [50, 70, 50, 40, 80, 60],
+                        name: 'CIO/采购',
+                        itemStyle: { color: colors.gray },
+                        areaStyle: { opacity: 0.2 }
+                    }
+                ]
+            }]
+        });
+
+        // Chart 2: Budget Pie
+        const budgetChart = echarts.init(document.getElementById('budgetChart'));
+        budgetChart.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: ¥{c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                right: 10,
+                top: 'center',
+                textStyle: { fontSize: 11 }
+            },
+            series: [{
+                type: 'pie',
+                radius: ['45%', '70%'],
+                center: ['35%', '50%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 6,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: { show: false },
+                data: [
+                    { value: 80000, name: '知乎内容', itemStyle: { color: colors.primary } },
+                    { value: 60000, name: '专业媒体', itemStyle: { color: colors.primaryLight } },
+                    { value: 60000, name: '线下活动', itemStyle: { color: colors.accent } },
+                    { value: 50000, name: 'LinkedIn', itemStyle: { color: '#4a5568' } },
+                    { value: 30000, name: '内容制作', itemStyle: { color: colors.gray } },
+                    { value: 20000, name: 'SEM', itemStyle: { color: colors.lightGray } }
+                ]
+            }]
+        });
+
+        // Chart 3: MQL Bar
+        const mqlChart = echarts.init(document.getElementById('mqlChart'));
+        mqlChart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' }
+            },
+            grid: {
+                left: '3%',
+                right: '15%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                axisLabel: { formatter: '{value}个' }
+            },
+            yAxis: {
+                type: 'category',
+                data: ['SEM', 'LinkedIn', '专业媒体', '知乎', '线下活动'],
+                axisLabel: { fontSize: 12 }
+            },
+            series: [{
+                type: 'bar',
+                data: [
+                    { value: 5, itemStyle: { color: colors.lightGray } },
+                    { value: 9, itemStyle: { color: '#4a5568' } },
+                    { value: 10, itemStyle: { color: colors.accentLight } },
+                    { value: 17, itemStyle: { color: colors.primaryLight } },
+                    { value: 12, itemStyle: { color: colors.accent } }
+                ],
+                barWidth: '60%',
+                label: {
+                    show: true,
+                    position: 'right',
+                    formatter: '{c} MQL'
+                }
+            }]
+        });
+
+        // Chart 4: CPA Comparison
+        const cpaChart = echarts.init(document.getElementById('cpaChart'));
+        cpaChart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'cross' }
+            },
+            legend: {
+                data: ['目标CPA', '预估CPA', '行业基准'],
+                bottom: 0
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '15%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['知乎', 'LinkedIn', '专业媒体', '线下活动', 'SEM', '整体平均'],
+                axisLabel: { fontSize: 12, rotate: 15 }
+            },
+            yAxis: {
+                type: 'value',
+                name: 'CPA (元)',
+                axisLabel: { formatter: '¥{value}' }
+            },
+            series: [
+                {
+                    name: '目标CPA',
+                    type: 'line',
+                    data: [6000, 6000, 6000, 6000, 6000, 6000],
+                    lineStyle: { type: 'dashed', color: colors.accent, width: 2 },
+                    symbol: 'none'
+                },
+                {
+                    name: '预估CPA',
+                    type: 'bar',
+                    data: [
+                        { value: 4700, itemStyle: { color: colors.success } },
+                        { value: 5600, itemStyle: { color: colors.success } },
+                        { value: 5500, itemStyle: { color: colors.success } },
+                        { value: 5000, itemStyle: { color: colors.success } },
+                        { value: 4000, itemStyle: { color: colors.success } },
+                        { value: 5400, itemStyle: { color: colors.primary } }
+                    ],
+                    barWidth: '50%',
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '¥{c}'
+                    }
+                },
+                {
+                    name: '行业基准',
+                    type: 'bar',
+                    data: [5000, 7500, 7000, 6500, 6000, 6500],
+                    barWidth: '50%',
+                    itemStyle: { color: colors.lightGray, opacity: 0.5 },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '¥{c}',
+                        color: colors.gray
+                    }
+                }
+            ]
+        });
+
+        // Chart 5: Timeline
+        const timelineChart = echarts.init(document.getElementById('timelineChart'));
+        timelineChart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' }
+            },
+            legend: {
+                data: ['知乎', 'LinkedIn', '专业媒体', '线下活动', '内容制作', 'SEM'],
+                bottom: 0
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '15%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['M1', 'M2', 'M3', 'M4', 'M5', 'M6']
+            },
+            yAxis: {
+                type: 'value',
+                name: '预算 (千元)',
+                axisLabel: { formatter: '{value}K' }
+            },
+            series: [
+                {
+                    name: '知乎',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [20, 18, 15, 12, 10, 5],
+                    itemStyle: { color: colors.primary }
+                },
+                {
+                    name: 'LinkedIn',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [5, 8, 12, 12, 10, 3],
+                    itemStyle: { color: '#4a5568' }
+                },
+                {
+                    name: '专业媒体',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [5, 10, 10, 10, 15, 10],
+                    itemStyle: { color: colors.accent }
+                },
+                {
+                    name: '线下活动',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [0, 0, 10, 10, 10, 30],
+                    itemStyle: { color: colors.accentLight }
+                },
+                {
+                    name: '内容制作',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [10, 8, 5, 3, 2, 2],
+                    itemStyle: { color: colors.gray }
+                },
+                {
+                    name: 'SEM',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [5, 6, 3, 3, 3, 0],
+                    itemStyle: { color: colors.lightGray }
+                }
+            ]
+        });
+
+        // Chart 6: Content Funnel
+        const contentFunnel = echarts.init(document.getElementById('contentFunnel'));
+        contentFunnel.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c}%'
+            },
+            series: [{
+                type: 'funnel',
+                left: '10%',
+                top: 20,
+                bottom: 20,
+                width: '80%',
+                min: 0,
+                max: 100,
+                minSize: '0%',
+                maxSize: '100%',
+                sort: 'descending',
+                gap: 2,
+                label: {
+                    show: true,
+                    position: 'inside',
+                    formatter: '{b}',
+                    fontSize: 12,
+                    color: '#fff'
+                },
+                itemStyle: {
+                    borderColor: '#fff',
+                    borderWidth: 1
+                },
+                data: [
+                    { value: 100, name: '知乎专业回答', itemStyle: { color: colors.primary } },
+                    { value: 80, name: '实操指南', itemStyle: { color: colors.primaryLight } },
+                    { value: 60, name: '标杆客户案例', itemStyle: { color: colors.accent } },
+                    { value: 40, name: '直播/闭门会', itemStyle: { color: colors.accentLight } },
+                    { value: 20, name: '行业白皮书', itemStyle: { color: colors.success } }
+                ]
+            }]
+        });
+
+        // Responsive resize
+        window.addEventListener('resize', () => {
+            audienceChart.resize();
+            budgetChart.resize();
+            mqlChart.resize();
+            cpaChart.resize();
+            timelineChart.resize();
+            contentFunnel.resize();
+        });
+    </script>
+</body>
+</html>

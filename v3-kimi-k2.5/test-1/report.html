@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>野生咖啡 - Q2 媒介规划报告</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #6B4423;
+            --secondary-color: #A0522D;
+            --accent-color: #D2691E;
+            --bg-light: #FAF7F2;
+            --bg-card: #FFFFFF;
+            --text-main: #2C2416;
+            --text-muted: #6B5B4F;
+            --border-color: #E8DFD0;
+            --success-color: #4A7C59;
+            --warning-color: #C9A227;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 0 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .meta-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        /* Executive Summary */
+        .executive-summary {
+            background: var(--bg-card);
+            margin: -30px auto 40px;
+            padding: 35px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 2;
+        }
+
+        .summary-title {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .summary-card {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .summary-card.highlight {
+            background: var(--primary-color);
+            color: white;
+            border-left-color: var(--accent-color);
+        }
+
+        .summary-card .label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .summary-card .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        /* Section Styles */
+        .section {
+            background: var(--bg-card);
+            margin: 30px 0;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-number {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Context Grid */
+        .context-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .context-card {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .context-card h4 {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .context-card ul {
+            list-style: none;
+        }
+
+        .context-card li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .context-card li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 14px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        /* Logic Flow */
+        .logic-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .logic-step {
+            flex: 1;
+            min-width: 180px;
+            background: var(--bg-light);
+            padding: 25px 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logic-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .logic-step .icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .logic-step h4 {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .logic-step p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Channel Table */
+        .channel-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        .channel-table th,
+        .channel-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .channel-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .channel-table tr:hover td {
+            background: var(--bg-light);
+        }
+
+        .channel-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .tag-xhs {
+            background: #FFE4E1;
+            color: #C53030;
+        }
+
+        .tag-douyin {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .tag-wechat {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        /* Budget Cards */
+        .budget-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .budget-card {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .budget-card.phase-1 {
+            border-top-color: #8B7355;
+        }
+
+        .budget-card.phase-2 {
+            border-top-color: #A0522D;
+        }
+
+        .budget-card.phase-3 {
+            border-top-color: #6B4423;
+        }
+
+        .budget-card .phase-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .budget-card .phase-budget {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .budget-card .phase-orders {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            height: 400px;
+            margin: 25px 0;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .chart-box {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .chart-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .chart-box .chart-container {
+            height: 300px;
+            margin: 0;
+        }
+
+        /* Insight Box */
+        .insight-box {
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFEFEB 100%);
+            border-left: 4px solid var(--accent-color);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .insight-box h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .insight-box p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Source Index */
+        .source-index {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .source-index h4 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .source-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .source-item {
+            padding: 5px 0;
+        }
+
+        .source-item strong {
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header-meta {
+                gap: 20px;
+            }
+
+            .context-grid,
+            .chart-row,
+            .budget-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .logic-flow {
+                flex-direction: column;
+            }
+
+            .logic-step:not(:last-child)::after {
+                content: '↓';
+                right: 50%;
+                top: 100%;
+                transform: translateX(50%);
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .executive-summary {
+                padding: 25px;
+                margin-top: -20px;
+            }
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 25px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-content h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .timeline-tasks {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .task-tag {
+            background: var(--bg-light);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <h1>野生咖啡 · Q2 媒介规划报告</h1>
+            <p class="subtitle">新锐精品咖啡品牌冷启动投放策略</p>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <span class="meta-label">总预算</span>
+                    <span class="meta-value">¥80 万</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">目标订单</span>
+                    <span class="meta-value">5,000+</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">投放周期</span>
+                    <span class="meta-value">3 个月</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">目标 CPA</span>
+                    <span class="meta-value">¥160</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Executive Summary -->
+        <div class="executive-summary">
+            <div class="summary-title">核心结论 Executive Summary</div>
+            <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.8;">
+                基于精品咖啡品类特性与目标人群分析，我们建议采用<strong>"小红书种草 + 抖音放量 + 微信私域"</strong>的组合策略。
+                总预算 80 万元分三阶段投放，以内容种草建立品牌认知，以直播与效果广告驱动转化，
+                预计 3 个月内获取 5,000+ 首单用户，达成品牌冷启动目标。
+            </p>
+            <div class="summary-grid">
+                <div class="summary-card highlight">
+                    <div class="label">小红书预算占比</div>
+                    <div class="value">41%</div>
+                </div>
+                <div class="summary-card highlight">
+                    <div class="label">抖音预算占比</div>
+                    <div class="value">45%</div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">首月目标 CPA</div>
+                    <div class="value">¥312</div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">末月目标 CPA</div>
+                    <div class="value">¥93</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1: Project Context -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2 class="section-title">项目背景与核心挑战</h2>
+            </div>
+            
+            <div class="context-grid">
+                <div class="context-card">
+                    <h4>品牌信息</h4>
+                    <ul>
+                        <li>品牌名称：野生咖啡 (Wild Coffee)</li>
+                        <li>定位：新锐精品手冲咖啡品牌</li>
+                        <li>产地：云南/埃塞俄比亚单一产地</li>
+                        <li>客单价：120-180 元/包</li>
+                        <li>核心卖点：风味教育 + 冲煮仪式感</li>
+                    </ul>
+                </div>
+                <div class="context-card">
+                    <h4>目标人群</h4>
+                    <ul>
+                        <li>年龄：25-35 岁</li>
+                        <li>城市：一二线城市</li>
+                        <li>特征：咖啡爱好者、品质追求者</li>
+                        <li>触媒：小红书、抖音、微信</li>
+                        <li>消费：注重生活方式与仪式感</li>
+                    </ul>
+                </div>
+                <div class="context-card">
+                    <h4>营销目标</h4>
+                    <ul>
+                        <li>Q2 新品上市，建立品牌认知</li>
+                        <li>3 个月内获取 5,000+ 首单用户</li>
+                        <li>总预算控制在 80 万元以内</li>
+                        <li>目标 CPA ≤ 160 元</li>
+                    </ul>
+                </div>
+                <div class="context-card">
+                    <h4>市场环境</h4>
+                    <ul>
+                        <li>抖音咖啡品类 2024 H1 增长 110% [S2]</li>
+                        <li>一二线城市咖啡渗透率 67% [S5]</li>
+                        <li>26-45 岁占咖啡消费 68% [S1]</li>
+                        <li>小红书是生活方式决策关键平台 [S3]</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <h4>核心挑战</h4>
+                <p>
+                    预算 80 万 ÷ 5000 单 = CPA 上限 160 元。精品咖啡决策链路较长，新品牌无认知基础，
+                    需在内容种草与效果转化之间找到平衡。首月以品牌建设为主，CPA 可能偏高；
+                    随着认知度提升，后两月 CPA 将逐月下降。
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Strategic Logic -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2 class="section-title">策略推导逻辑</h2>
+            </div>
+
+            <div class="logic-flow">
+                <div class="logic-step">
+                    <div class="icon">1</div>
+                    <h4>人群洞察</h4>
+                    <p>25-35岁一二线城市<br>咖啡品质追求者</p>
+                </div>
+                <div class="logic-step">
+                    <div class="icon">2</div>
+                    <h4>品类特性</h4>
+                    <p>精品咖啡内容驱动<br>强种草属性</p>
+                </div>
+                <div class="logic-step">
+                    <div class="icon">3</div>
+                    <h4>平台选择</h4>
+                    <p>小红书+抖音+微信<br>全链路覆盖</p>
+                </div>
+                <div class="logic-step">
+                    <div class="icon">4</div>
+                    <h4>节奏规划</h4>
+                    <p>认知→放量→收割<br>三阶段推进</p>
+                </div>
+            </div>
+
+            <div class="chart-container" id="audienceChart"></div>
+        </section>
+
+        <!-- Section 3: Channel Strategy -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2 class="section-title">渠道组合策略</h2>
+            </div>
+
+            <table class="channel-table">
+                <thead>
+                    <tr>
+                        <th>渠道</th>
+                        <th>预算占比</th>
+                        <th>核心作用</th>
+                        <th>主要形式</th>
+                        <th>预期 CPA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="channel-tag tag-xhs">小红书</span></td>
+                        <td>41% (¥33万)</td>
+                        <td>种草、品牌建设、搜索收割</td>
+                        <td>KOL/KOC + 信息流 + 搜索</td>
+                        <td>¥125-167</td>
+                    </tr>
+                    <tr>
+                        <td><span class="channel-tag tag-douyin">抖音</span></td>
+                        <td>45% (¥36.25万)</td>
+                        <td>放量、直播、效果转化</td>
+                        <td>信息流 + 达人直播 + 品牌自播</td>
+                        <td>¥80-333</td>
+                    </tr>
+                    <tr>
+                        <td><span class="channel-tag tag-wechat">微信</span></td>
+                        <td>14% (¥10.75万)</td>
+                        <td>私域沉淀、复购、内容</td>
+                        <td>公众号 + 私域运营</td>
+                        <td>¥40</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <div class="chart-title">渠道预算分配</div>
+                    <div class="chart-container" id="budgetPieChart"></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title">渠道功能定位</div>
+                    <div class="chart-container" id="channelRadarChart"></div>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <h4>渠道选择依据</h4>
+                <p>
+                    <strong>小红书 (41%)</strong>：咖啡是强内容驱动品类，小红书在生活方式领域具有不可替代的种草价值。
+                    目标人群在此进行决策前的"做功课"行为，是建立品牌心智的关键阵地 [S3]。<br><br>
+                    <strong>抖音 (45%)</strong>：流量池最大，咖啡品类 2024 H1 销售额增长 110%，直播带货成熟，适合放量和收割 [S2]。<br><br>
+                    <strong>微信 (14%)</strong>：作为私域基建，承接公域流量，通过社群运营提升复购和 LTV。
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 4: Flight Plan -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <h2 class="section-title">投放节奏规划</h2>
+            </div>
+
+            <div class="budget-cards">
+                <div class="budget-card phase-1">
+                    <div class="phase-name">Phase 1 · 认知建立期</div>
+                    <div class="phase-budget">¥25万</div>
+                    <div class="phase-orders">预估订单: 800 | CPA: ¥312</div>
+                </div>
+                <div class="budget-card phase-2">
+                    <div class="phase-name">Phase 2 · 增长放量期</div>
+                    <div class="phase-budget">¥30万</div>
+                    <div class="phase-orders">预估订单: 1,500 | CPA: ¥200</div>
+                </div>
+                <div class="budget-card phase-3">
+                    <div class="phase-name">Phase 3 · 收割转化期</div>
+                    <div class="phase-budget">¥25万</div>
+                    <div class="phase-orders">预估订单: 2,700 | CPA: ¥93</div>
+                </div>
+            </div>
+
+            <div class="chart-container" id="flightChart"></div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">第 1 月</div>
+                    <div class="timeline-content">
+                        <h4>认知建立期 · 品牌冷启动</h4>
+                        <p>以小红书为核心，通过 KOL/KOC 铺量建立品牌认知，积累内容资产和种子用户。</p>
+                        <div class="timeline-tasks">
+                            <span class="task-tag">小红书 KOL 合作</span>
+                            <span class="task-tag">KOC 铺量种草</span>
+                            <span class="task-tag">抖音短视频测试</span>
+                            <span class="task-tag">公众号内容建设</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">第 2 月</div>
+                    <div class="timeline-content">
+                        <h4>增长放量期 · 声量扩大</h4>
+                        <p>加大抖音投放力度，启动达人直播合作，小红书信息流放量，扩大品牌声量。</p>
+                        <div class="timeline-tasks">
+                            <span class="task-tag">抖音信息流放量</span>
+                            <span class="task-tag">达人直播带货</span>
+                            <span class="task-tag">小红书搜索广告</span>
+                            <span class="task-tag">私域运营启动</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">第 3 月</div>
+                    <div class="timeline-content">
+                        <h4>收割转化期 · ROI 优化</h4>
+                        <p>聚焦效果转化，抖音效果广告收割，品牌自播常态化，私域流量贡献转化。</p>
+                        <div class="timeline-tasks">
+                            <span class="task-tag">效果广告收割</span>
+                            <span class="task-tag">品牌自播</span>
+                            <span class="task-tag">搜索流量承接</span>
+                            <span class="task-tag">私域复购激活</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Performance Projection -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <h2 class="section-title">效果预估与 ROI</h2>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-box">
+                    <div class="chart-title">分阶段订单预估</div>
+                    <div class="chart-container" id="orderChart"></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title">CPA 趋势预测</div>
+                    <div class="chart-container" id="cpaChart"></div>
+                </div>
+            </div>
+
+            <div class="chart-container" id="roiChart"></div>
+
+            <div class="insight-box">
+                <h4>关键假设与风险提示</h4>
+                <p>
+                    <strong>效果预估基于以下假设：</strong><br>
+                    1. 小红书信息流 CPM ¥30、CTR 12%、CVR 2%，预估 CPA ¥125<br>
+                    2. 抖音信息流 CPM ¥20、CTR 3%、CVR 2%，预估 CPA ¥333<br>
+                    3. 直播渠道 CPA 较低 (¥80)，需配合优质达人资源<br>
+                    4. 随着品牌认知度提升，CPA 逐月下降 (¥312 → ¥200 → ¥93)<br><br>
+                    
+                    <strong>风险提示：</strong>
+                    首月 CPA 可能高于目标值，建议预留 20% 预算弹性；
+                    需持续监控 CTR、CVR 等核心指标，及时调整投放策略。
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 6: Next Steps -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">6</div>
+                <h2 class="section-title">下一步行动</h2>
+            </div>
+
+            <div class="context-grid">
+                <div class="context-card">
+                    <h4>立即执行</h4>
+                    <ul>
+                        <li>确认品牌毛利率与 LTV 数据</li>
+                        <li>筛选小红书 KOL/KOC 合作名单</li>
+                        <li>准备抖音开户与素材库</li>
+                        <li>建立数据监控 Dashboard</li>
+                    </ul>
+                </div>
+                <div class="context-card">
+                    <h4>第 1 周</h4>
+                    <ul>
+                        <li>完成小红书首批 10-15 位达人签约</li>
+                        <li>启动内容 brief 撰写与审核</li>
+                        <li>抖音账户搭建与人群包测试</li>
+                        <li>公众号内容排期规划</li>
+                    </ul>
+                </div>
+                <div class="context-card">
+                    <h4>第 2-4 周</h4>
+                    <ul>
+                        <li>小红书内容发布与数据监测</li>
+                        <li>抖音短视频 A/B 测试</li>
+                        <li>首周数据复盘与优化</li>
+                        <li>达人直播档期确认</li>
+                    </ul>
+                </div>
+                <div class="context-card">
+                    <h4>持续优化</h4>
+                    <ul>
+                        <li>周度数据复盘会议</li>
+                        <li>月度预算调整机制</li>
+                        <li>竞品动态监控</li>
+                        <li>复购率追踪与私域优化</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Source Index -->
+        <div class="source-index">
+            <h4>数据来源 Source Index</h4>
+            <div class="source-list">
+                <div class="source-item"><strong>[S1]</strong> 经济日报《咖啡消费潜力持续释放》2024-11</div>
+                <div class="source-item"><strong>[S2]</strong> 山池咖啡2025小红书营销推广方案</div>
+                <div class="source-item"><strong>[S3]</strong> 小红书官方行业基准数据</div>
+                <div class="source-item"><strong>[S4]</strong> 人人都是产品经理《抖音广告成本分析》</div>
+                <div class="source-item"><strong>[S5]</strong> 浙江大学/行业人群洞察报告</div>
+                <div class="source-item"><strong>[S6]</strong> 福布斯中国《新锐消费品牌冷启动操作手册》2021-08</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>野生咖啡 · Q2 媒介规划报告 | 机密文件 · 仅供内部使用</p>
+            <p style="margin-top: 8px;">生成时间：2026年2月12日</p>
+        </footer>
+    </div>
+
+    <script>
+        // Color Palette
+        const colors = {
+            primary: '#6B4423',
+            secondary: '#A0522D',
+            accent: '#D2691E',
+            light: '#E8DFD0',
+            xhs: '#FF2442',
+            douyin: '#1a1a1a',
+            wechat: '#07C160'
+        };
+
+        // Chart 1: Audience Radar
+        const audienceChart = echarts.init(document.getElementById('audienceChart'));
+        audienceChart.setOption({
+            title: {
+                text: '目标人群触媒偏好分析',
+                left: 'center',
+                top: 10,
+                textStyle: { color: '#2C2416', fontSize: 16 }
+            },
+            tooltip: { trigger: 'item' },
+            legend: {
+                data: ['25-30岁', '30-35岁'],
+                bottom: 10
+            },
+            radar: {
+                indicator: [
+                    { name: '小红书', max: 100 },
+                    { name: '抖音', max: 100 },
+                    { name: '微信', max: 100 },
+                    { name: 'B站', max: 100 },
+                    { name: '微博', max: 100 },
+                    { name: '知乎', max: 100 }
+                ],
+                radius: '60%',
+                center: ['50%', '50%']
+            },
+            series: [{
+                type: 'radar',
+                data: [
+                    {
+                        value: [95, 88, 75, 60, 45, 50],
+                        name: '25-30岁',
+                        areaStyle: { color: 'rgba(107, 68, 35, 0.3)' },
+                        lineStyle: { color: colors.primary }
+                    },
+                    {
+                        value: [85, 82, 85, 50, 55, 60],
+                        name: '30-35岁',
+                        areaStyle: { color: 'rgba(210, 105, 30, 0.2)' },
+                        lineStyle: { color: colors.accent }
+                    }
+                ]
+            }]
+        });
+
+        // Chart 2: Budget Pie
+        const budgetPieChart = echarts.init(document.getElementById('budgetPieChart'));
+        budgetPieChart.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c}万 ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                right: 10,
+                top: 'center'
+            },
+            series: [{
+                type: 'pie',
+                radius: ['40%', '70%'],
+                center: ['40%', '50%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 8,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: true,
+                    formatter: '{b}\n{d}%'
+                },
+                data: [
+                    { value: 33, name: '小红书', itemStyle: { color: colors.xhs } },
+                    { value: 36.25, name: '抖音', itemStyle: { color: colors.douyin } },
+                    { value: 10.75, name: '微信', itemStyle: { color: colors.wechat } }
+                ]
+            }]
+        });
+
+        // Chart 3: Channel Radar
+        const channelRadarChart = echarts.init(document.getElementById('channelRadarChart'));
+        channelRadarChart.setOption({
+            tooltip: {},
+            legend: {
+                data: ['小红书', '抖音', '微信'],
+                bottom: 10
+            },
+            radar: {
+                indicator: [
+                    { name: '种草能力', max: 100 },
+                    { name: '转化效率', max: 100 },
+                    { name: '品牌塑造', max: 100 },
+                    { name: '流量规模', max: 100 },
+                    { name: '用户沉淀', max: 100 },
+                    { name: '成本可控', max: 100 }
+                ],
+                radius: '60%'
+            },
+            series: [{
+                type: 'radar',
+                data: [
+                    {
+                        value: [95, 60, 90, 70, 50, 65],
+                        name: '小红书',
+                        lineStyle: { color: colors.xhs },
+                        areaStyle: { color: 'rgba(255, 36, 66, 0.2)' }
+                    },
+                    {
+                        value: [75, 90, 65, 95, 40, 70],
+                        name: '抖音',
+                        lineStyle: { color: '#666' },
+                        areaStyle: { color: 'rgba(100, 100, 100, 0.2)' }
+                    },
+                    {
+                        value: [50, 70, 60, 50, 95, 85],
+                        name: '微信',
+                        lineStyle: { color: colors.wechat },
+                        areaStyle: { color: 'rgba(7, 193, 96, 0.2)' }
+                    }
+                ]
+            }]
+        });
+
+        // Chart 4: Flight Plan Timeline
+        const flightChart = echarts.init(document.getElementById('flightChart'));
+        flightChart.setOption({
+            title: {
+                text: '三阶段预算与渠道分配',
+                left: 'center',
+                top: 10,
+                textStyle: { color: '#2C2416', fontSize: 16 }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' }
+            },
+            legend: {
+                data: ['小红书', '抖音', '微信'],
+                bottom: 10
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '15%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['Phase 1\n(第1月)', 'Phase 2\n(第2月)', 'Phase 3\n(第3月)']
+            },
+            yAxis: {
+                type: 'value',
+                name: '预算 (万元)',
+                max: 35
+            },
+            series: [
+                {
+                    name: '小红书',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [15, 10.5, 7.5],
+                    itemStyle: { color: colors.xhs }
+                },
+                {
+                    name: '抖音',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [7.5, 15, 13.75],
+                    itemStyle: { color: '#444' }
+                },
+                {
+                    name: '微信',
+                    type: 'bar',
+                    stack: 'total',
+                    data: [2.5, 4.5, 3.75],
+                    itemStyle: { color: colors.wechat }
+                }
+            ]
+        });
+
+        // Chart 5: Order Projection
+        const orderChart = echarts.init(document.getElementById('orderChart'));
+        orderChart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{b}: {c} 单'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '10%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['Phase 1', 'Phase 2', 'Phase 3'],
+                axisLabel: { color: '#666' }
+            },
+            yAxis: {
+                type: 'value',
+                name: '订单量',
+                max: 3000
+            },
+            series: [{
+                type: 'bar',
+                data: [
+                    { value: 800, itemStyle: { color: '#8B7355' } },
+                    { value: 1500, itemStyle: { color: '#A0522D' } },
+                    { value: 2700, itemStyle: { color: '#6B4423' } }
+                ],
+                barWidth: '50%',
+                label: {
+                    show: true,
+                    position: 'top',
+                    formatter: '{c} 单'
+                }
+            }]
+        });
+
+        // Chart 6: CPA Trend
+        const cpaChart = echarts.init(document.getElementById('cpaChart'));
+        cpaChart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{b}: ¥{c}'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '10%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['Phase 1', 'Phase 2', 'Phase 3'],
+                axisLabel: { color: '#666' }
+            },
+            yAxis: {
+                type: 'value',
+                name: 'CPA (元)',
+                max: 400
+            },
+            series: [{
+                type: 'line',
+                data: [312, 200, 93],
+                smooth: true,
+                lineStyle: { color: colors.primary, width: 3 },
+                areaStyle: {
+                    color: {
+                        type: 'linear',
+                        x: 0, y: 0, x2: 0, y2: 1,
+                        colorStops: [
+                            { offset: 0, color: 'rgba(107, 68, 35, 0.4)' },
+                            { offset: 1, color: 'rgba(107, 68, 35, 0.05)' }
+                        ]
+                    }
+                },
+                label: {
+                    show: true,
+                    formatter: '¥{c}'
+                },
+                markLine: {
+                    data: [{ yAxis: 160, name: '目标 CPA' }],
+                    lineStyle: { color: '#C53030', type: 'dashed' },
+                    label: { formatter: '目标 CPA: ¥160' }
+                }
+            }]
+        });
+
+        // Chart 7: ROI Projection
+        const roiChart = echarts.init(document.getElementById('roiChart'));
+        roiChart.setOption({
+            title: {
+                text: '投放效果预估 (乐观/基准/保守)',
+                left: 'center',
+                top: 10,
+                textStyle: { color: '#2C2416', fontSize: 16 }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'cross' }
+            },
+            legend: {
+                data: ['订单量', 'CPA'],
+                bottom: 10
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '15%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['乐观情况', '基准情况', '保守情况']
+            },
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '订单量',
+                    position: 'left'
+                },
+                {
+                    type: 'value',
+                    name: 'CPA (元)',
+                    position: 'right',
+                    inverse: true
+                }
+            ],
+            series: [
+                {
+                    name: '订单量',
+                    type: 'bar',
+                    data: [
+                        { value: 6500, itemStyle: { color: '#4A7C59' } },
+                        { value: 5000, itemStyle: { color: colors.primary } },
+                        { value: 3500, itemStyle: { color: '#C9A227' } }
+                    ],
+                    barWidth: '40%',
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '{c} 单'
+                    }
+                },
+                {
+                    name: 'CPA',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    data: [123, 160, 229],
+                    lineStyle: { color: '#C53030', width: 2 },
+                    symbol: 'circle',
+                    symbolSize: 10,
+                    label: {
+                        show: true,
+                        formatter: '¥{c}'
+                    }
+                }
+            ]
+        });
+
+        // Responsive
+        window.addEventListener('resize', () => {
+            audienceChart.resize();
+            budgetPieChart.resize();
+            channelRadarChart.resize();
+            flightChart.resize();
+            orderChart.resize();
+            cpaChart.resize();
+            roiChart.resize();
+        });
+    </script>
+</body>
+</html>
